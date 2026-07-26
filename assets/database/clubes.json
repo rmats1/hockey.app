@@ -1,0 +1,707 @@
+[
+  {
+    "club": "SAN MARTÍN",
+    "clubId": "00000003",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/6/0/c6031d780caaa45e.jpg"
+  },
+  {
+    "club": "CIUDAD",
+    "clubId": "00000009",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/9/0/090e3a115f65d54d.jpg"
+  },
+  {
+    "club": "BANCO NACION",
+    "clubId": "00000018",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/d/8/bd8f8d5de670d442.jpg"
+  },
+  {
+    "club": "B. HIPOTECARIO",
+    "clubId": "00000023",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/b/9/fb915976befb5020.jpg"
+  },
+  {
+    "club": "PUCARA",
+    "clubId": "00000025",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/c/8/9c8e338df310944b.jpg"
+  },
+  {
+    "club": "M. GRANDE",
+    "clubId": "00000026",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/b/9/db9fc68e13fca16f.jpg"
+  },
+  {
+    "club": "REGATAS B.V.",
+    "clubId": "00000029",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/6/3/e/63ed3081361fa1b1.png"
+  },
+  {
+    "club": "BANADE",
+    "clubId": "00000033",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/d/0/0d087dab665a18af.jpg"
+  },
+  {
+    "club": "SAGLZ",
+    "clubId": "00000052",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/4/3/943aa12aafd09a27.jpg"
+  },
+  {
+    "club": "LOMAS",
+    "clubId": "00000004",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/c/f/ccfe08312c1da085.jpg"
+  },
+  {
+    "club": "QUILMES",
+    "clubId": "00000005",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/0/f/e0f1dd796b667e59.jpg"
+  },
+  {
+    "club": "G. Y ESGRIMA",
+    "clubId": "00000007",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/2/0/c20c4d772aa9a0ae.jpg"
+  },
+  {
+    "club": "MITRE",
+    "clubId": "00000008",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/0/7/70749644fc4d764f.jpg"
+  },
+  {
+    "club": "B.A.C.R.C.",
+    "clubId": "00000013",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/c/8/bc89afcdb129e766.jpg"
+  },
+  {
+    "club": "BCO. PROVINCIA",
+    "clubId": "00000015",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/3/9/d39966e803b20e12.jpg"
+  },
+  {
+    "club": "S.A.G.",
+    "clubId": "00000019",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/b/f/fbfe1737d027a9fb.jpg"
+  },
+  {
+    "club": "HINDU CLUB",
+    "clubId": "00000024",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/c/5/8c52775f7b597c6c.jpg"
+  },
+  {
+    "club": "ARQUITECTURA",
+    "clubId": "00000027",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/7/d/87d69135ad01ca18.png"
+  },
+  {
+    "club": "LA SALLE",
+    "clubId": "00000034",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/9/6/f963683cd97f5eed.jpg"
+  },
+  {
+    "club": "R. AVELLANEDA",
+    "clubId": "00000035",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/9/1/991e6846da802056.jpg"
+  },
+  {
+    "club": "SAN CIRANO",
+    "clubId": "00000039",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/8/2/e82c156c699f721f.jpg"
+  },
+  {
+    "club": "S. BARBARA",
+    "clubId": "00000045",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/a/3/da3932f727c2e88d.jpg"
+  },
+  {
+    "club": "C.A.S.I.",
+    "clubId": "00000002",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/b/e/5be8a34524715e12.png"
+  },
+  {
+    "club": "SAN FERNANDO",
+    "clubId": "00000006",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/c/f/acf612a4ac20f22c.jpg"
+  },
+  {
+    "club": "OLIVOS",
+    "clubId": "00000010",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/7/1/97188692c5ebd9a9.jpg"
+  },
+  {
+    "club": "HURLING",
+    "clubId": "00000012",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/5/0/15070954f1502095.jpg"
+  },
+  {
+    "club": "DUCILO",
+    "clubId": "00000022",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/7/f/f7fce3cb8b677328.jpg"
+  },
+  {
+    "club": "S. CATHERINES",
+    "clubId": "00000032",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/e/e/4eed5e1c3b62f020.jpg"
+  },
+  {
+    "club": "SAN ANDRÉS",
+    "clubId": "00000038",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/2/5/425ba1bd7e07f706.jpg"
+  },
+  {
+    "club": "SAN MARCOS",
+    "clubId": "00000040",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/7/a/57aae2a6274b323a.jpg"
+  },
+  {
+    "club": "LUJAN R.C.",
+    "clubId": "00000042",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/0/d/b0de58ed160f2a85.jpg"
+  },
+  {
+    "club": "M. MORENO",
+    "clubId": "00000043",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/2/8/42882b14bec2e138.jpg"
+  },
+  {
+    "club": "HACOAJ",
+    "clubId": "00000044",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/0/2/1026b49080e6c0e8.png"
+  },
+  {
+    "club": "SAN ALBANO",
+    "clubId": "00000046",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/3/1/d/31d0daffa1478723.jpg"
+  },
+  {
+    "club": "LOS MATREROS",
+    "clubId": "00000050",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/9/c/19c8b0a79b80989a.jpg"
+  },
+  {
+    "club": "SAN CARLOS",
+    "clubId": "00000054",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/e/a/1ea61b14b94cdd09.jpg"
+  },
+  {
+    "club": "BELGRANO",
+    "clubId": "00000001",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/c/b/bcb02c343061afa9.png"
+  },
+  {
+    "club": "S.I.C.",
+    "clubId": "00000011",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/6/8/3/6837355c8905ea35.png"
+  },
+  {
+    "club": "AACF QUILMES",
+    "clubId": "00000020",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/3/f/7/3f7df6196ca5be61.jpg"
+  },
+  {
+    "club": "U. LA PLATA",
+    "clubId": "00000021",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/b/c/bbc6163da3b066d4.jpg"
+  },
+  {
+    "club": "Q.H.S.",
+    "clubId": "00000028",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/b/f/0bf95514eb83347c.jpg"
+  },
+  {
+    "club": "C.U.B.A.",
+    "clubId": "00000031",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/0/2/2026238860b6c7cb.jpg"
+  },
+  {
+    "club": "LOS CEDROS",
+    "clubId": "00000036",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/d/f/5dfd319c7741c4af.jpg"
+  },
+  {
+    "club": "S.I.T.A.S.",
+    "clubId": "00000049",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/d/b/ddb84b1f00fd22ee.jpg"
+  },
+  {
+    "club": "LOS PINOS",
+    "clubId": "00000065",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/9/6/5961c5b4f39b6b48.jpg"
+  },
+  {
+    "club": "EL SOSIEGO",
+    "clubId": "00000070",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/0/f/20f9be0369c3cf3c.jpg"
+  },
+  {
+    "club": "H.C. ANDERSEN",
+    "clubId": "00000073",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/0/b/90b06d7220691498.jpg"
+  },
+  {
+    "club": "C. NEWMAN",
+    "clubId": "00000074",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/a/0/aa08088a28f6ca1c.jpg"
+  },
+  {
+    "club": "ALMAFUERTE",
+    "clubId": "00000075",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/f/f/1ffa9764a04f4d51.jpg"
+  },
+  {
+    "club": "VELEZ",
+    "clubId": "00000081",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/0/8/f0862c3c7dc04a2f.jpg"
+  },
+  {
+    "club": "HURACÁN",
+    "clubId": "00000083",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/d/d/add26f8a33cbd9a5.jpg"
+  },
+  {
+    "club": "C.A.S.A. DE PADUA",
+    "clubId": "00000097",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/c/f/0cf9b886d7f51f85.jpg"
+  },
+  {
+    "club": "ARGENTINO",
+    "clubId": "00000102",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/5/2/a522e1f78f659d9d.png"
+  },
+  {
+    "club": "CLUB J.M.",
+    "clubId": "00000112",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/4/4/d448097592d4c68d.jpg"
+  },
+  {
+    "club": "COMUNICACIONES",
+    "clubId": "00000158",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/4/5/4459be125a1b05b8.jpg"
+  },
+  {
+    "club": "C.I.S.S.A.B.",
+    "clubId": "00000170",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/f/a/bfaabfe767718abd.jpg"
+  },
+  {
+    "club": "CTRY MI REFUGIO",
+    "clubId": "00000176",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/8/0/180db7428f5ccdbe.jpg"
+  },
+  {
+    "club": "DEF. MORENO",
+    "clubId": "00000180",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/a/e/1ae85fcc799d62ea.jpg"
+  },
+  {
+    "club": "TRISTAN SUAREZ",
+    "clubId": "00000181",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/3/3/c3397583d92e6d7d.jpg"
+  },
+  {
+    "club": "VICENTINOS",
+    "clubId": "00000183",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/7/6/97696fd4d8ecf7c4.jpg"
+  },
+  {
+    "club": "U. LA MATANZA",
+    "clubId": "00000186",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/7/9/079ecbf3456acc15.jpg"
+  },
+  {
+    "club": "ALMTE. BROWN",
+    "clubId": "00000196",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/1/c/51cf920c9b693cbc.jpg"
+  },
+  {
+    "club": "PADRE MARIO",
+    "clubId": "00000202",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/d/0/fd04c2fb83cead9f.jpg"
+  },
+  {
+    "club": "BANCO CENTRAL",
+    "clubId": "00000203",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/c/f/fcff0253e7078a60.jpg"
+  },
+  {
+    "club": "ATL. CHASCOMUS",
+    "clubId": "00001047",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/c/1/ec135427bbb380a2.png"
+  },
+  {
+    "club": "JOCKEY CLUB",
+    "clubId": "00010187",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/a/e/7ae8dca3449b5b66.png"
+  },
+  {
+    "club": "ARECO R.C.",
+    "clubId": "00010259",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/1/1/711ad30f20981ced.png"
+  },
+  {
+    "club": "MUN. LA MATANZA",
+    "clubId": "00010263",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/0/d/40d015062f2d1c65.png"
+  },
+  {
+    "club": "MIJAYI",
+    "clubId": "00010264",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/a/f/caf4e727f4c7e9e7.png"
+  },
+  {
+    "club": "PUERTOS DEL LAGO",
+    "clubId": "00010318",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/b/4/eb40b6d1228f4b46.png"
+  },
+  {
+    "club": "MERCEDES R.C.",
+    "clubId": "00010320",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/1/7/217c4fab2ddf21e6.png"
+  },
+  {
+    "club": "LICEO NAVAL",
+    "clubId": "00000060",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/4/e/74eb2f0ce9bac525.jpg"
+  },
+  {
+    "club": "PUEYRREDON",
+    "clubId": "00000061",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/e/2/ee2f6dc5e0270034.jpg"
+  },
+  {
+    "club": "LANUS",
+    "clubId": "00000064",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/9/1/f91439f7e3c625b3.jpg"
+  },
+  {
+    "club": "MUN. V. LOPEZ",
+    "clubId": "00000068",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/3/d/73da89c336a536fd.jpg"
+  },
+  {
+    "club": "CENTRO NAVAL",
+    "clubId": "00000072",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/4/5/c4537f1fdff91d9c.jpg"
+  },
+  {
+    "club": "BELGRANO D.S.",
+    "clubId": "00000079",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/5/0/050dc6a88a9c2a6f.jpg"
+  },
+  {
+    "club": "SAN LORENZO",
+    "clubId": "00000080",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/c/3/1c3728c3ddbd4124.jpg"
+  },
+  {
+    "club": "BERAZATEGUI",
+    "clubId": "00000082",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/c/1/fc10bf51984347d1.jpg"
+  },
+  {
+    "club": "SOC. HEBRAICA",
+    "clubId": "00000085",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/9/d/79df654c8b4b9a8a.jpg"
+  },
+  {
+    "club": "MARTÍN GÜEMES",
+    "clubId": "00000086",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/4/a/f/4af82bf1e0ad370a.jpg"
+  },
+  {
+    "club": "LICEO MILITAR",
+    "clubId": "00000088",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/9/7/a971e2802fbb542b.jpg"
+  },
+  {
+    "club": "SAN PATRICIO",
+    "clubId": "00000092",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/b/0/db0b27479484b35e.jpg"
+  },
+  {
+    "club": "G.E.I.",
+    "clubId": "00000110",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/a/c/0accc29ab746bd5e.jpg"
+  },
+  {
+    "club": "N. CHICAGO",
+    "clubId": "00000169",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/8/9/d89c73a0b193bc0e.jpg"
+  },
+  {
+    "club": "FERRO C. O.",
+    "clubId": "00000172",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/2/a/b2a1fdc520b5dc0c.jpg"
+  },
+  {
+    "club": "S. LORENZO MUÑIZ",
+    "clubId": "00000174",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/8/8/d88bfe8201d72e42.jpg"
+  },
+  {
+    "club": "TIGRE R. C.",
+    "clubId": "00000179",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/4/8/d48f048bde8529e3.jpg"
+  },
+  {
+    "club": "SAN TELMO",
+    "clubId": "00000184",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/a/8/e/a8e6ae0d1aa8298e.jpg"
+  },
+  {
+    "club": "DEP. S. BARBARA",
+    "clubId": "00000187",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/5/0/c50c31969bb96a65.jpg"
+  },
+  {
+    "club": "SANTA ANGELA",
+    "clubId": "00000189",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/9/6/f96fa81eb49b16ce.jpg"
+  },
+  {
+    "club": "OAKHILL",
+    "clubId": "00000190",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/5/a/55adb342a045974f.jpg"
+  },
+  {
+    "club": "PLATENSE",
+    "clubId": "00000195",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/5/5/75519fe04ee9b0d5.jpg"
+  },
+  {
+    "club": "RACING CLUB",
+    "clubId": "00000204",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/3/c/1/3c1fdbf0c3970eae.jpg"
+  },
+  {
+    "club": "CERRO PILAR",
+    "clubId": "00001034",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/d/0/8d0c746b7b5f6feb.jpg"
+  },
+  {
+    "club": "CIUDAD DE CAMPANA",
+    "clubId": "00001046",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/5/3/9531d2b464629448.png"
+  },
+  {
+    "club": "PUERTO NIZUC",
+    "clubId": "00010079",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/2/7/727bb257490fa5bc.PNG"
+  },
+  {
+    "club": "BOCA JUNIORS",
+    "clubId": "00010080",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/5/a/55aeefe44903a5c1.png"
+  },
+  {
+    "club": "HOCKEY AVELLANEDA",
+    "clubId": "00010185",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/c/b/2cbcdb76dfe04e98.png"
+  },
+  {
+    "club": "ATENEO MERCEDES",
+    "clubId": "00010266",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/f/6/bf615060ef781a46.png"
+  },
+  {
+    "club": "CAMPANA B.C.",
+    "clubId": "00000055",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/c/a/eca9ab1e8cdcaea9.jpg"
+  },
+  {
+    "club": "ITALIANO",
+    "clubId": "00000058",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/6/2/f/62fd3aae606c42e1.jpg"
+  },
+  {
+    "club": "UNIV. BS. AS.",
+    "clubId": "00000062",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/7/3/2731c0f265efe704.jpg"
+  },
+  {
+    "club": "D.A.O.M.",
+    "clubId": "00000067",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/8/3/e836927882109236.jpg"
+  },
+  {
+    "club": "EST. LA PLATA",
+    "clubId": "00000071",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/e/a/5eaf8a7406cabc26.jpg"
+  },
+  {
+    "club": "BANFIELD",
+    "clubId": "00000076",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/f/1/7f1edc375d6f3c41.jpg"
+  },
+  {
+    "club": "RIVER PLATE",
+    "clubId": "00000078",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/8/5/08586aaf298520c9.jpg"
+  },
+  {
+    "club": "MACABI",
+    "clubId": "00000084",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/b/9/5b9678c942a7d8c9.jpg"
+  },
+  {
+    "club": "CHAMPAGNAT",
+    "clubId": "00000087",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/c/1/8c1d5bae2eedf9b0.png"
+  },
+  {
+    "club": "DEP. FRANCESA",
+    "clubId": "00000091",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/2/b/02b15a913ce4e986.jpg"
+  },
+  {
+    "club": "ST. BRENDANS",
+    "clubId": "00000168",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/9/2/e92570a5832c34ba.jpg"
+  },
+  {
+    "club": "SAN LUIS",
+    "clubId": "00000173",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/3/a/8/3a8bae56ccd5e4f5.jpg"
+  },
+  {
+    "club": "TEMPERLEY",
+    "clubId": "00000178",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/c/d/7cd330adfaeba54e.jpg"
+  },
+  {
+    "club": "G. Y E. LA PLATA",
+    "clubId": "00000188",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/6/5/f653b413aeae1031.jpg"
+  },
+  {
+    "club": "A. Y P. BRANDSEN",
+    "clubId": "00000192",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/6/9/a/69adb3e58de83ae0.jpg"
+  },
+  {
+    "club": "LOS ANDES",
+    "clubId": "00000193",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/9/5/8/9580c1d55e65774e.jpg"
+  },
+  {
+    "club": "C. CORTO",
+    "clubId": "00000198",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/e/d/feda0f03301d0666.jpg"
+  },
+  {
+    "club": "O. GEORGIAN",
+    "clubId": "00001035",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/f/1/7f156e7bfd29ddae.png"
+  },
+  {
+    "club": "ASOCIACION DEL SUR",
+    "clubId": "00001044",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/0/5/2054ecf9974c3631.png"
+  },
+  {
+    "club": "CIRCULO HEBREO",
+    "clubId": "00010010",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/f/0/e/f0e11632e8a32be2.jpg"
+  },
+  {
+    "club": "MUN. L. DE ZAMORA",
+    "clubId": "00010186",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/3/b/53b023ea82c2b495.png"
+  },
+  {
+    "club": "ALBATROS",
+    "clubId": "00010260",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/c/1/5c144a725d6ef899.png"
+  },
+  {
+    "club": "A. C. BRANDSEN",
+    "clubId": "00010262",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/8/4/b84e66c490d0e758.png"
+  },
+  {
+    "club": "C.M. BELGRANO",
+    "clubId": "00000057",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/2/1/2/21246c149d648732.jpg"
+  },
+  {
+    "club": "BANCO CIUDAD",
+    "clubId": "00000063",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/9/4/5946cec29c5ceeda.jpg"
+  },
+  {
+    "club": "PORTEÑO",
+    "clubId": "00000066",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/e/2/7/e27842749ab5cb83.jpg"
+  },
+  {
+    "club": "COUNTRY B. PROV.",
+    "clubId": "00000090",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/c/d/ccdc5ed77ee9ec76.jpg"
+  },
+  {
+    "club": "LAS CAÑAS R. C.",
+    "clubId": "00000175",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/0/b/70b03dac2d992ddd.jpg"
+  },
+  {
+    "club": "E. F. I. LOBOS",
+    "clubId": "00000182",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/7/4/b/74b06855fdb3ee1b.jpg"
+  },
+  {
+    "club": "CAMIONEROS",
+    "clubId": "00000191",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/d/d/8ddf268b92d2b3d4.jpg"
+  },
+  {
+    "club": "MUN. F. VARELA",
+    "clubId": "00000194",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/8/f/7/8f75d0cc436c7d87.jpg"
+  },
+  {
+    "club": "LA MARTONA",
+    "clubId": "00000200",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/8/c/18c99f2fb8386731.jpg"
+  },
+  {
+    "club": "MIRAFLORES C.",
+    "clubId": "00001043",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/4/c/c4ce94063b5d2ad7.jpg"
+  },
+  {
+    "club": "EVERTON",
+    "clubId": "00001045",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/0/4/d044f3f196615aaf.png"
+  },
+  {
+    "club": "ASOC. MASTER",
+    "clubId": "00010008",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/1/b/8/1b898c0cb7d7fb6b.jpg"
+  },
+  {
+    "club": "FLECHA DE ORO",
+    "clubId": "00010188",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/e/3/be396dd68b6d7cd3.png"
+  },
+  {
+    "club": "SAN SEBASTIAN",
+    "clubId": "00010258",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/c/d/c/cdc2d89b51ece2ab.png"
+  },
+  {
+    "club": "BEROMAMA",
+    "clubId": "00010261",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/0/d/f/0dfb03f5030a503b.png"
+  },
+  {
+    "club": "EL FRONTÓN",
+    "clubId": "00010356",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/5/c/c/5cc1ae0bc5a06642.png"
+  },
+  {
+    "club": "SB5 SPORTS",
+    "clubId": "00010357",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/6/9/b/69b5775a9cbe881a.gif"
+  },
+  {
+    "club": "CLUB ATLETICO PILAR",
+    "clubId": "00010387",
+    "clubEscudo": "https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/d/b/6/db620dfea4ac2253.png"
+  }
+]
