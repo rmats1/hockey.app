@@ -1,112 +1,86 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_model.dart';
-import 'dart:convert';
 
 class AuthService {
-  // Configuración de almacenamiento seguro
-  static const _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-  );
-
-  static const String _userKey = 'secure_current_user';
-  static const String _isLoggedInKey = 'secure_is_logged_in';
-  static const String _usersKey = 'secure_registered_users';
+  final _supabase = Supabase.instance.client;
 
   // ========== SESIÓN ACTUAL ==========
 
-  Future<void> saveCurrentUser(UserModel user) async {
-    try {
-      final userJson = json.encode(user.toMap());
-      await _storage.write(key: _userKey, value: userJson);
-      await _storage.write(key: _isLoggedInKey, value: 'true');
-    } catch (e) {
-      debugPrint('Security Error: Failed to save user securely - $e');
-    }
-  }
-
   Future<UserModel?> getCurrentUser() async {
     try {
-      final isLoggedIn = await _storage.read(key: _isLoggedInKey);
-      if (isLoggedIn != 'true') return null;
+      final session = _supabase.auth.currentSession;
+      if (session == null) return null;
       
-      final userString = await _storage.read(key: _userKey);
-      if (userString == null) return null;
+      final response = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', session.user.id)
+          .single();
       
-      return UserModel.fromMap(json.decode(userString));
+      return UserModel.fromMap(response);
     } catch (e) {
-      debugPrint('Security Error: Failed to read user securely - $e');
       return null;
     }
   }
 
   Future<bool> isLoggedIn() async {
-    final isLoggedIn = await _storage.read(key: _isLoggedInKey);
-    return isLoggedIn == 'true';
+    return _supabase.auth.currentSession != null;
   }
 
   Future<void> logout() async {
-    await _storage.delete(key: _userKey);
-    await _storage.write(key: _isLoggedInKey, value: 'false');
+    await _supabase.auth.signOut();
   }
 
-  // Actualizar foto del usuario de forma segura
-  Future<void> updateUserPhoto(String fotoPath) async {
-    final user = await getCurrentUser();
-    if (user == null) return;
-    
-    final updatedUser = user.copyWith(fotoPath: fotoPath);
-    await saveCurrentUser(updatedUser);
-    
-    // Actualizar en la base de datos "local" segura
-    final users = await getAllUsers();
-    final index = users.indexWhere((u) => u.id == user.id);
-    if (index != -1) {
-      users[index] = updatedUser;
-      await _saveAllUsers(users);
-    }
-  }
+  // ========== REGISTRO Y LOGIN REAL CON SUPABASE ==========
 
-  // ========== REGISTRO DE USUARIOS SEGURO ==========
-
-  Future<bool> registerUser(UserModel user) async {
-    final users = await getAllUsers();
-    
-    if (users.any((u) => u.email == user.email)) {
-      return false;
-    }
-    
-    users.add(user);
-    await _saveAllUsers(users);
-    return true;
-  }
-
-  Future<List<UserModel>> getAllUsers() async {
+  Future<String?> signUp({
+    required String email,
+    required String password,
+    required UserModel userMetadata,
+  }) async {
     try {
-      final usersString = await _storage.read(key: _usersKey);
-      if (usersString == null) return [];
-      
-      final usersList = json.decode(usersString) as List;
-      return usersList
-          .map((userMap) => UserModel.fromMap(userMap))
-          .toList();
+      final response = await _supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
+
+      if (response.user != null) {
+        // Guardar el perfil en la tabla 'profiles'
+        final profileData = userMetadata.toMap();
+        profileData['id'] = response.user!.id; // Sobrescribir con el ID real de Auth
+        
+        await _supabase.from('profiles').insert(profileData);
+        return null; // Éxito
+      }
+      return 'Error desconocido al registrar';
+    } on AuthException catch (e) {
+      return e.message;
     } catch (e) {
-      return [];
+      return e.toString();
     }
   }
 
-  Future<void> _saveAllUsers(List<UserModel> users) async {
-    final usersJson = users.map((u) => u.toMap()).toList();
-    await _storage.write(key: _usersKey, value: json.encode(usersJson));
-  }
-
-  Future<UserModel?> findUserByEmail(String email) async {
-    final users = await getAllUsers();
+  Future<String?> signIn({
+    required String email,
+    required String password,
+  }) async {
     try {
-      return users.firstWhere((u) => u.email == email);
+      await _supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      return null; // Éxito
+    } on AuthException catch (e) {
+      return e.message;
     } catch (e) {
-      return null;
+      return e.toString();
     }
+  }
+
+  /// Método temporal para guardar el usuario actual en memoria si fuera necesario
+  /// En Supabase v2, esto se maneja automáticamente por la sesión persistente.
+  Future<void> saveCurrentUser(UserModel user) async {
+    // No es estrictamente necesario con Supabase Auth ya que la sesión persiste sola,
+    // pero lo mantenemos por compatibilidad con main.dart si se usa para tests.
   }
 }

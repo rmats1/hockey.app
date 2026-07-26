@@ -38,20 +38,19 @@ class UserModel {
       'id': id,
       'email': email,
       'nombre': nombre,
-      'userType': userType,
+      'user_type': userType,
       'rama': rama,
       'categoria': categoria,
       'division': division,
-      'clubId': club.id,
-      'clubNombre': club.nombre,
-      'clubNombreCorto': club.nombreCorto,
-      'clubEscudo': club.escudoUrl,
-      'numeroCamiseta': numeroCamiseta,
+      'club_id': club.id,
+      'club_nombre': club.nombre,
+      'club_escudo': club.escudoUrl,
+      'numero_camiseta': numeroCamiseta,
       'posicion': posicion,
-      'rolCuerpoTecnico': rolCuerpoTecnico,
-      'fechaNacimiento': fechaNacimiento?.toIso8601String(),
-      'fechaRegistro': fechaRegistro.toIso8601String(),
-      'fotoPath': fotoPath,
+      'rol_cuerpo_tecnico': rolCuerpoTecnico,
+      'fecha_nacimiento': fechaNacimiento?.toIso8601String(),
+      'fecha_registro': fechaRegistro.toIso8601String(),
+      'foto_url': fotoPath,
     };
   }
 
@@ -60,24 +59,23 @@ class UserModel {
       id: map['id'],
       email: map['email'],
       nombre: map['nombre'],
-      userType: map['userType'],
-      rama: map['rama'] ?? (map['categoria'] == 'Damas' || map['categoria'] == 'Caballeros' ? map['categoria'] : 'Damas'),
-      categoria: map['categoria'] ?? map['division'] ?? '1ra',
+      userType: map['user_type'] ?? map['userType'] ?? 'jugador',
+      rama: map['rama'] ?? 'Damas',
+      categoria: map['categoria'] ?? '1ra',
       division: map['division'],
       club: Club(
-        id: map['clubId'],
-        nombre: map['clubNombre'],
-        nombreCorto: map['clubNombreCorto'],
-        escudoUrl: map['clubEscudo'],
+        id: map['club_id'] ?? map['clubId'] ?? '0',
+        nombre: map['club_nombre'] ?? map['clubNombre'] ?? 'Sin Club',
+        escudoUrl: map['club_escudo'] ?? map['clubEscudo'],
       ),
-      numeroCamiseta: map['numeroCamiseta'],
+      numeroCamiseta: map['numero_camiseta'] ?? map['numeroCamiseta'],
       posicion: map['posicion'],
-      rolCuerpoTecnico: map['rolCuerpoTecnico'],
-      fechaNacimiento: map['fechaNacimiento'] != null
-          ? DateTime.parse(map['fechaNacimiento'])
-          : null,
-      fechaRegistro: DateTime.parse(map['fechaRegistro'] ?? DateTime.now().toIso8601String()),
-      fotoPath: map['fotoPath'],
+      rolCuerpoTecnico: map['rol_cuerpo_tecnico'] ?? map['rolCuerpoTecnico'],
+      fechaNacimiento: map['fecha_nacimiento'] != null
+          ? DateTime.parse(map['fecha_nacimiento'])
+          : (map['fechaNacimiento'] != null ? DateTime.parse(map['fechaNacimiento']) : null),
+      fechaRegistro: DateTime.parse(map['fecha_registro'] ?? map['fechaRegistro'] ?? DateTime.now().toIso8601String()),
+      fotoPath: map['foto_url'] ?? map['fotoPath'],
     );
   }
 

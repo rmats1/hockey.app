@@ -1,12 +1,9 @@
-- [/] Respaldo y Estabilización
-    - [x] Identificar APK estable
-    - [ ] Crear copia de seguridad de la APK maestra
-- [ ] Actualización de Documentación
-    - [ ] Mejorar `README.md`
-    - [ ] Actualizar `DEV_HISTORY.md`
-- [ ] Conexión a GitHub
-    - [ ] Inicializar Git local
-    - [ ] Configurar `.gitignore`
-    - [ ] Vincular con remoto: `https://github.com/rmats1/hockey.app.git`
-    - [ ] Primer Commit y Push
-- [ ] Conexión a Supabase (Siguiente Fase)
+- [x] Respaldo y Estabilización
+- [x] Actualización de Documentación
+- [x] Conexión a GitHub
+- [/] Conexión a Supabase (Migración de Auth)
+    - [x] Ejecución de SQL en Dashboard
+    - [ ] Actualizar `UserModel.dart` (mapeo snake_case)
+    - [ ] Actualizar `AuthService.dart` (integración Supabase Auth)
+    - [ ] Limpiar `main.dart`
+    - [ ] Sincronizar cambios a GitHub

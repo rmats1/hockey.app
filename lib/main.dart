@@ -147,26 +147,6 @@ class _AppInitializerState extends State<AppInitializer> {
   }
 
   Future<void> _checkAuth() async {
-    // ========== AUTO-LOGIN TEST USER ==========
-    final testUser = UserModel(
-      id: 'test_user_id',
-      email: 'rmats1@gmail.com',
-      nombre: 'MATÍAS ROSALES',
-      userType: 'jugador',
-      rama: 'Caballeros',
-      categoria: 'Intermedia',
-      division: 'C',
-      numeroCamiseta: 44,
-      club: Club(
-        id: '00000172',
-        nombre: 'FERRO C. O.',
-        escudoUrl: 'https://d3ojtsl5tb0s7a.cloudfront.net/images/federacion/b/2/a/b2a1fdc520b5dc0c.jpg'
-      ),
-      fechaRegistro: DateTime.now(),
-    );
-    await _authService.saveCurrentUser(testUser);
-    // ==========================================
-
     final isLoggedIn = await _authService.isLoggedIn();
     if (!mounted) return;
     
