@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "770621197255",
+    "project_id": "hockey-app-503623",
+    "storage_bucket": "hockey-app-503623.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770621197255:android:42933f79adb12b165c27e2",
+        "android_client_info": {
+          "package_name": "com.example.hockey_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770621197255-1akpqr3iqt19f1t9214s4qke5u8a2cqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hockey_app",
+            "certificate_hash": "5d4ad1964e58fedfe5841c3653f4e24f0db1091d"
+          }
+        },
+        {
+          "client_id": "770621197255-oqp3n3p6rigjlq9hffh2sat80030civa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwc2YHmNOVxry6KsQdtuwRvYYUhmnCSNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770621197255-oqp3n3p6rigjlq9hffh2sat80030civa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770621197255:android:35e298d6b08100355c27e2",
+        "android_client_info": {
+          "package_name": "com.example.hockey_app_dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770621197255-oqp3n3p6rigjlq9hffh2sat80030civa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwc2YHmNOVxry6KsQdtuwRvYYUhmnCSNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770621197255-oqp3n3p6rigjlq9hffh2sat80030civa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
