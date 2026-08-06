@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.firebase.perf) apply false
 }

@@ -1,7 +1,8 @@
 - [x] Configurando el entorno y migrando lógica del scraper Python
-- [/] Implementar `supabase_sync.py` (Script creado, pendiente instalar dependencias)
-- [ ] Implementar gestión de planes de entrenamiento en `SupabaseService.kt`
-- [ ] Crear `PhysicalPlanningScreen.kt` y conectarlo al Panel Técnico
-- [ ] Ajustes finales de navegación en `AppNavigation.kt` y `HomeScreen.kt`
-- [ ] Inicializar Git y preparar para GitHub
-- [ ] Verificación final de la aplicación completa
+- [x] Implementar `supabase_sync.py` (Script creado en /scripts)
+- [x] Implementar gestión de planes de entrenamiento en `SupabaseService.kt`
+- [x] Crear `PhysicalPlanningScreen.kt` y conectarlo al Panel Técnico
+- [x] Ajustes finales de navegación en `AppNavigation.kt` y `HomeScreen.kt`
+- [x] Inicializar Git y preparar primer commit
+- [x] Configurar GitHub Actions workflow para sincronización automática
+- [x] Verificación final de la aplicación completa

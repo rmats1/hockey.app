@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.firebase.perf)
 }
 
 android {
@@ -21,6 +22,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -70,6 +75,11 @@ dependencies {
     implementation(libs.supabase.storage)
     implementation(libs.supabase.realtime)
     implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
 
     // DI - Hilt
@@ -89,7 +99,20 @@ dependencies {
     // AI
     implementation(libs.google.generativeai)
 
+    // GitHub Skills
+    implementation(libs.timber)
+    implementation(libs.lottie.compose)
+    debugImplementation(libs.leakcanary)
+    debugImplementation(libs.chucker.library)
+    releaseImplementation(libs.chucker.no.op)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.constraintlayout.compose)
+    implementation(libs.firebase.performance)
+
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.turbine)
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,31 +1,26 @@
-# Walkthrough - Finalización de la Migración
+# Walkthrough - Automatización y Autonomía de la App
 
-La aplicación "New Hockey App" ha sido totalmente migrada a una arquitectura nativa con Kotlin y Jetpack Compose, integrando todos sus servicios con Supabase.
+Se ha implementado el sistema de automatización que permite a la aplicación actualizar sus datos de forma autónoma desde la fuente oficial de la AHBA.
 
-## Cambios Finales Realizados
+## Cambios Realizados
 
-### Persistencia y Favoritos
-- **[FavoriteClubsViewModel.kt](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/app/src/main/java/com/example/hockey_app/ui/screens/club/FavoriteClubsViewModel.kt)**: Ahora gestiona el estado de los clubes favoritos directamente con Supabase.
-- **Interacción Real**: Al marcar un club como favorito, la preferencia se guarda en la base de datos vinculada al usuario, permitiendo que persista entre sesiones.
+### Automatización (GitHub Actions)
+- **[.github/workflows/data_sync.yml](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/.github/workflows/data_sync.yml)**: Se configuró un flujo de trabajo que despierta cada 6 horas para ejecutar el scraper. Esto garantiza que los resultados, tablas de posiciones y goleadores estén siempre actualizados sin intervención manual.
 
-### Herramientas del Entrenador
-- **[PhysicalPlanningScreen.kt](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/app/src/main/java/com/example/hockey_app/ui/screens/coach/PhysicalPlanningScreen.kt)**: Nueva interfaz para que el cuerpo técnico publique las indicaciones físicas de la semana.
-- **Comunicación con el Plantel**: El plan físico subido por el técnico se refleja automáticamente en la sección "Mi Equipo" de todos los jugadores de su club y categoría.
+### Backend Inteligente
+- **[supabase_sync.py](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/scripts/supabase_sync.py)**: El script está optimizado para ejecutarse en la nube de GitHub, conectándose directamente a la API de AHBA, descifrando la información y sincronizándola con las tablas de Supabase.
 
-### Integración de Navegación Final
-- **[AppNavigation.kt](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/app/src/main/java/com/example/hockey_app/ui/navigation/AppNavigation.kt)**:
-    - Se eliminaron parámetros manuales de prueba.
-    - Se conectaron todas las rutas de detalle (Noticias, Partidos) y gestión (Planificación, Convocatoria).
-- **[HomeScreen.kt](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/app/src/main/java/com/example/hockey_app/ui/screens/home/HomeScreen.kt)**: Centraliza ahora todas las lambdas de navegación, asegurando un flujo de usuario coherente y sin errores.
+### Control de Versiones Final
+- Se han consolidado todos los cambios en el repositorio local.
+- La estructura de carpetas (`app`, `scripts`, `.github`) está organizada siguiendo las mejores prácticas de desarrollo.
 
-## Estado Final de la App
-1. **Autenticación**: Login, Registro y Perfil completamente operativos.
-2. **Torneos y Fixture**: Tablas de posiciones, resultados y goleadores dinámicos.
-3. **Sección Social**: Comentarios y Prode funcional en el detalle de partidos.
-4. **Sección Mi Equipo**: Citaciones y planes físicos vinculados a la base de datos real.
-5. **Panel Técnico**: Herramientas de pizarra, gestión de convocatorias y planificación física activas.
-6. **Utilidades**: Compartir noticias y contacto por WhatsApp integrado.
+## Cómo funciona la autonomía
+1.  **GitHub** detecta el horario programado o un disparo manual.
+2.  Inicia una máquina virtual con Python.
+3.  Ejecuta el scraper.
+4.  Los datos viajan de la API de Hockey a tu base de datos de **Supabase**.
+5.  Los usuarios abren la App y ven la información más reciente al instante.
 
 ## Verificación
-- Se comprobó la integridad de la base de datos en Supabase mediante las llamadas asíncronas desde los ViewModels.
-- Se validó el manejo de errores y estados de carga en todas las pantallas nuevas.
+- El archivo de workflow es sintácticamente correcto.
+- Se ha realizado el commit final con la infraestructura de automatización.

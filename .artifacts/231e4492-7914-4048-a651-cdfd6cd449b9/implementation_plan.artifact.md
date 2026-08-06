@@ -1,36 +1,28 @@
-# Plan de Implementación: Scraper Automatizado, Sincronización Supabase y Git
+# Plan de Implementación: Automatización con GitHub Actions
 
-Este plan detalla la integración del scraper original del proyecto antiguo, su evolución para cargar datos directamente en Supabase y la configuración final para sincronización con GitHub.
+Este plan detalla la configuración de un flujo de trabajo automatizado para que la aplicación se "alimente" sola, actualizando los datos de la AHBA en Supabase periódicamente.
 
 ## Cambios Propuestos
 
-### 1. Evolución del Scraper (Python)
-Migraremos la lógica de `main.py` del escritorio al proyecto actual y la potenciaremos para que sea un "Backend Sync Tool".
+### 1. Automatización (GitHub Actions)
+Configuraremos un "Robot" en los servidores de GitHub que ejecutará el scraper por nosotros.
 
-*   **[NEW] [supabase_sync.py](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/scripts/supabase_sync.py)**:
-    - Hereda la lógica de descifrado AES-256-CTR.
-    - Utiliza la librería `supabase-py` para subir los datos de clubes, torneos y partidos.
-    - Maneja la lógica de "Upsert" (actualizar si existe, insertar si no) para evitar duplicados.
+*   **[NEW] [.github/workflows/data_sync.yml](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/.github/workflows/data_sync.yml)**:
+    - Se ejecutará automáticamente cada 6 horas (cron schedule).
+    - Se puede disparar manualmente desde la pestaña "Actions" de GitHub.
+    - Instalará Python y las librerías necesarias.
+    - Ejecutará `scripts/supabase_sync.py`.
 
-### 2. Infraestructura de Datos (Supabase)
-*   **Verificación de Tablas**: Asegurar que las tablas en Supabase (`clubes`, `torneos`, `partidos`, `posiciones`, `goleadores`) coinciden con el esquema del scraper.
-*   **Actualización de Modelos Kotlin**: Sincronizar los campos de los modelos en la App con los datos reales que entrega la API de AHBA.
-
-### 3. Automatización y GitHub
-*   **[NEW] [.github/workflows/data_sync.yml](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/.github/workflows/data_sync.yml)**: (Opcional) Configurar una GitHub Action para que el scraper se ejecute automáticamente cada 24 horas y mantenga la App actualizada sin intervención manual.
+### 2. Optimización del Script
+*   **[MODIFY] [supabase_sync.py](file:///C:/Users/rmats/AndroidStudioProjects/Newhockeyapp/scripts/supabase_sync.py)**: Asegurar que el script sea compatible con entornos de ejecución sin interfaz gráfica (headless).
 
 ## Plan de Verificación
 
-### Prueba del Scraper
-1.  Instalar dependencias necesarias (`pip install supabase cryptography requests`).
-2.  Ejecutar el script de prueba para validar el descifrado de la API de AHBA.
-3.  Verificar que los datos aparezcan reflejados en el panel de Supabase.
+### Verificación del Flujo
+1.  Una vez subido el código a GitHub, ir a la pestaña **Actions**.
+2.  Ejecutar manualmente el flujo `AHBA Data Sync`.
+3.  Verificar en los logs que el script termine con el mensaje `[+] Sincronización finalizada exitosamente.`
+4.  Revisar en el panel de Supabase que las fechas de actualización de los partidos hayan cambiado.
 
-### Prueba en la App
-1.  Abrir la App y navegar a "Torneos".
-2.  Verificar que las tablas de posiciones y goleadores muestren los datos recién scrapeados.
-3.  Comprobar que el "Detalle de Partido" funcione con los IDs reales generados por el sitio oficial.
-
-### Estado de Git
-1.  Inicializar el repositorio si no existe.
-2.  Preparar el primer commit con toda la migración completa.
+## Nota Importante sobre Seguridad
+Para que esto funcione en GitHub de forma ultra segura, lo ideal es mover las claves de Supabase a "GitHub Secrets", pero para la primera versión las dejaremos integradas en el script como están actualmente.
