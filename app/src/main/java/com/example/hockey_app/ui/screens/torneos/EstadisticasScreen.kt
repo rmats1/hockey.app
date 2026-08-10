@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,9 +33,9 @@ fun EstadisticasScreen(
 ) {
     var selectedRama by remember { mutableStateOf("Damas") }
     var selectedTab by remember { mutableStateOf(0) }
-    val isLoading by viewModel.isLoading.collectAsState()
-    val goleadores by viewModel.goleadores.collectAsState()
-    val posiciones by viewModel.posiciones.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val goleadores by viewModel.goleadores.collectAsStateWithLifecycle()
+    val posiciones by viewModel.posiciones.collectAsStateWithLifecycle()
 
     LaunchedEffect(selectedRama) {
         val torneoId = if (selectedRama == "Damas") "t1" else "t8"

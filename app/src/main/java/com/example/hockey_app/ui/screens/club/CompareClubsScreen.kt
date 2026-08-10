@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.SportsHockey
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,7 @@ fun CompareClubsScreen(
     onBack: () -> Unit,
     viewModel: CompareClubsViewModel = hiltViewModel()
 ) {
-    val clubes by viewModel.clubes.collectAsState()
+    val clubes by viewModel.clubes.collectAsStateWithLifecycle()
     var club1 by remember { mutableStateOf<ClubModel?>(null) }
     var club2 by remember { mutableStateOf<ClubModel?>(null) }
     var selectingForClub by remember { mutableStateOf<Int?>(null) }

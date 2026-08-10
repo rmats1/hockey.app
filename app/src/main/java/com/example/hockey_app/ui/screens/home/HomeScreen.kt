@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,8 +46,8 @@ fun HomeScreen(
     onNavigateToNewsDetail: (com.example.hockey_app.data.models.NewsModel) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val user by viewModel.user.collectAsState()
-    val currentIndex by viewModel.currentIndex.collectAsState()
+    val user by viewModel.user.collectAsStateWithLifecycle()
+    val currentIndex by viewModel.currentIndex.collectAsStateWithLifecycle()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 

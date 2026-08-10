@@ -28,6 +28,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +52,7 @@ fun RegisterScreen(
     onNavigateToHome: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
@@ -104,7 +105,7 @@ fun RegisterScreen(
             SectionHeader("ROL Y RAMA")
             Spacer(modifier = Modifier.height(16.dp))
 
-            val userType by viewModel.userType.collectAsState()
+            val userType by viewModel.userType.collectAsStateWithLifecycle()
             Row {
                 SelectionButton(
                     label = "JUGADOR/A",
@@ -125,7 +126,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            val rama by viewModel.rama.collectAsState()
+            val rama by viewModel.rama.collectAsStateWithLifecycle()
             Row {
                 SmallSelectButton(
                     label = "DAMAS",
@@ -152,7 +153,7 @@ fun RegisterScreen(
             SectionHeader("CATEGORÍA Y DIVISIÓN")
             Spacer(modifier = Modifier.height(12.dp))
 
-            val categoria by viewModel.categoria.collectAsState()
+            val categoria by viewModel.categoria.collectAsStateWithLifecycle()
             DropdownField(
                 label = "Categoría (Torneo)",
                 icon = Icons.Default.EmojiEvents,
@@ -166,7 +167,7 @@ fun RegisterScreen(
 
             if (userType == "jugador") {
                 Spacer(modifier = Modifier.height(12.dp))
-                val numeroCamiseta by viewModel.numeroCamiseta.collectAsState()
+                val numeroCamiseta by viewModel.numeroCamiseta.collectAsStateWithLifecycle()
                 ModernTextField(
                     value = numeroCamiseta,
                     onValueChange = { viewModel.numeroCamiseta.value = it },
@@ -175,7 +176,7 @@ fun RegisterScreen(
                     keyboardType = KeyboardType.Number
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                val posicion by viewModel.posicion.collectAsState()
+                val posicion by viewModel.posicion.collectAsStateWithLifecycle()
                 DropdownField(
                     label = "Posición",
                     icon = Icons.Default.Sports,
@@ -185,7 +186,7 @@ fun RegisterScreen(
                 )
             } else {
                 Spacer(modifier = Modifier.height(12.dp))
-                val rol by viewModel.rolCuerpoTecnico.collectAsState()
+                val rol by viewModel.rolCuerpoTecnico.collectAsStateWithLifecycle()
                 DropdownField(
                     label = "Rol",
                     icon = Icons.Default.Work,
@@ -199,15 +200,15 @@ fun RegisterScreen(
             SectionHeader("DATOS PERSONALES")
             Spacer(modifier = Modifier.height(16.dp))
 
-            val name by viewModel.name.collectAsState()
+            val name by viewModel.name.collectAsStateWithLifecycle()
             ModernTextField(name, { viewModel.name.value = it }, "Nombre completo", Icons.Default.PersonOutline)
             Spacer(modifier = Modifier.height(16.dp))
 
-            val email by viewModel.email.collectAsState()
+            val email by viewModel.email.collectAsStateWithLifecycle()
             ModernTextField(email, { viewModel.email.value = it }, "Email", Icons.Default.AlternateEmail, KeyboardType.Email)
             Spacer(modifier = Modifier.height(16.dp))
 
-            val password by viewModel.password.collectAsState()
+            val password by viewModel.password.collectAsStateWithLifecycle()
             var passVisible by remember { mutableStateOf(value = false) }
             ModernTextField(
                 value = password,
@@ -221,7 +222,7 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            val confirmPassword by viewModel.confirmPassword.collectAsState()
+            val confirmPassword by viewModel.confirmPassword.collectAsStateWithLifecycle()
             var confirmPassVisible by remember { mutableStateOf(value = false) }
             ModernTextField(
                 value = confirmPassword,
@@ -412,7 +413,7 @@ fun DropdownField(
 
 @Composable
 fun DivisionSelector(viewModel: RegisterViewModel) {
-    val selectedDivision by viewModel.division.collectAsState()
+    val selectedDivision by viewModel.division.collectAsStateWithLifecycle()
 
     Column {
         Text("División (A, B, C...)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
@@ -443,8 +444,8 @@ fun DivisionSelector(viewModel: RegisterViewModel) {
 
 @Composable
 fun ClubSearchField(viewModel: RegisterViewModel) {
-    val allClubes by viewModel.clubes.collectAsState()
-    val selectedClub by viewModel.selectedClub.collectAsState()
+    val allClubes by viewModel.clubes.collectAsStateWithLifecycle()
+    val selectedClub by viewModel.selectedClub.collectAsStateWithLifecycle()
     var query by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 

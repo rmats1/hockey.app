@@ -1,3 +1,3 @@
-- [ ] Update `libs.versions.toml` with AGP 9.3.1 and desugar library
-- [ ] Update `app/build.gradle.kts` to compileSdk 36 and enable desugaring
-- [ ] Verify build with `./gradlew :app:assembleDebug`
+- [x] Update `libs.versions.toml` with AGP 9.3.1 and desugar library
+- [x] Update `app/build.gradle.kts` to compileSdk 36 and enable desugaring
+- [x] Verify build with `./gradlew :app:assembleDebug`

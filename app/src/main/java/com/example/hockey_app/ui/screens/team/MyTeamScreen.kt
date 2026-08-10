@@ -12,6 +12,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,10 +34,10 @@ fun MyTeamScreen(
     onNavigateToTacticalBoard: () -> Unit,
     viewModel: TeamViewModel = hiltViewModel(),
 ) {
-    val user by viewModel.user.collectAsState()
-    val trainingPlan by viewModel.trainingPlan.collectAsState()
-    val callUp by viewModel.callUp.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val user by viewModel.user.collectAsStateWithLifecycle()
+    val trainingPlan by viewModel.trainingPlan.collectAsStateWithLifecycle()
+    val callUp by viewModel.callUp.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
     Scaffold(

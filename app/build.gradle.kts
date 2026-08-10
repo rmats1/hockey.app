@@ -28,12 +28,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "SUPABASE_URL", "\"https://hpvsvsvrdlucuxcdrgbg.supabase.co\"")
+            buildConfigField("String", "SUPABASE_KEY", "\"sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Aquí deberías usar variables de entorno en producción
+            buildConfigField("String", "SUPABASE_URL", "\"https://hpvsvsvrdlucuxcdrgbg.supabase.co\"")
+            buildConfigField("String", "SUPABASE_KEY", "\"sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7\"")
         }
     }
     compileOptions {
@@ -73,6 +80,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     // Supabase
     implementation(libs.supabase.postgrest)

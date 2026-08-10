@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,8 +32,8 @@ fun SearchPlayersScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var filtroRama by remember { mutableStateOf("Todos") }
-    val jugadores by viewModel.jugadores.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val jugadores by viewModel.jugadores.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     val filtered = remember(jugadores, searchQuery, filtroRama) {
         jugadores.filter { j ->

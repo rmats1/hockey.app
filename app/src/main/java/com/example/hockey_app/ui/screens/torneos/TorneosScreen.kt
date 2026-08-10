@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hockey_app.data.models.TorneoResumen
 import com.valentinilk.shimmer.shimmer
 
@@ -30,10 +31,10 @@ fun TorneosScreen(
     onTorneoClick: (TorneoResumen) -> Unit,
     viewModel: TorneosViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
-    val busqueda by viewModel.busqueda.collectAsState()
-    val filtroRama by viewModel.filtroRama.collectAsState()
-    val filtroCategoria by viewModel.filtroCategoria.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val busqueda by viewModel.busqueda.collectAsStateWithLifecycle()
+    val filtroRama by viewModel.filtroRama.collectAsStateWithLifecycle()
+    val filtroCategoria by viewModel.filtroCategoria.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Color(0xFFF5F5F5)

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,9 +31,9 @@ fun CallUpManagementScreen(
     onBack: () -> Unit,
     viewModel: CallUpManagementViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
-    val selectedIds by viewModel.selectedPlayerIds.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val selectedIds by viewModel.selectedPlayerIds.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
     var rival by remember { mutableStateOf("") }
     var lugar by remember { mutableStateOf("") }

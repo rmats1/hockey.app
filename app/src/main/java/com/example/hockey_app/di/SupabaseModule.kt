@@ -15,20 +15,18 @@ import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.realtime
 import javax.inject.Singleton
+import com.example.hockey_app.BuildConfig
 
 @Module
 @InstallIn(SingletonComponent::class)
 object SupabaseModule {
 
-    private const val SUPABASE_URL = "https://hpvsvsvrdlucuxcdrgbg.supabase.co"
-    private const val SUPABASE_KEY = "sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7"
-
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {
         return createSupabaseClient(
-            supabaseUrl = SUPABASE_URL,
-            supabaseKey = SUPABASE_KEY
+            supabaseUrl = BuildConfig.SUPABASE_URL,
+            supabaseKey = BuildConfig.SUPABASE_KEY
         ) {
             install(Auth)
             install(Postgrest)
