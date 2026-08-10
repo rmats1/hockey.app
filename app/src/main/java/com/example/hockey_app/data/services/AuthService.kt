@@ -5,6 +5,7 @@ import androidx.core.content.edit
 import com.example.hockey_app.data.models.UserModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -31,6 +32,16 @@ class AuthService @Inject constructor(
                 this.password = pass
             }
             // Guardar perfil localmente para biometría/acceso rápido
+            getCurrentUser()?.let { saveUserLocally(it) }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun signInWithGoogle(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            auth.signInWith(Google)
             getCurrentUser()?.let { saveUserLocally(it) }
             Result.success(Unit)
         } catch (e: Exception) {

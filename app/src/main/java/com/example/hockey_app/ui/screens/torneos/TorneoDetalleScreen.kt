@@ -31,6 +31,8 @@ import com.example.hockey_app.data.models.GoleadorAHBA
 import com.example.hockey_app.data.models.PartidoAHBA
 import com.example.hockey_app.data.models.PosicionAHBA
 import com.example.hockey_app.data.models.TorneoResumen
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 enum class TorneoDetalleMode { POSICIONES, FIXTURE }
 
@@ -117,9 +119,9 @@ fun TorneoDetalleScreen(
 
 @Composable
 fun TablaList(
-    posiciones: List<PosicionAHBA>,
-    stats: List<Float> = emptyList(),
-    labels: List<String> = emptyList(),
+    posiciones: ImmutableList<PosicionAHBA>,
+    stats: ImmutableList<Float> = persistentListOf(),
+    labels: ImmutableList<String> = persistentListOf(),
     teamName: String = ""
 ) {
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -152,7 +154,7 @@ fun TablaList(
 }
 
 @Composable
-fun FixtureList(partidos: List<PartidoAHBA>, onMatchClick: (String) -> Unit = {}) {
+fun FixtureList(partidos: ImmutableList<PartidoAHBA>, onMatchClick: (String) -> Unit = {}) {
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         items(partidos) { p ->
             Card(
@@ -203,7 +205,7 @@ fun TeamInfo(name: String, escudo: String?, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GoleadoresList(goleadores: List<GoleadorAHBA>) {
+fun GoleadoresList(goleadores: ImmutableList<GoleadorAHBA>) {
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         items(goleadores) { g ->
             Card(

@@ -13,14 +13,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+
 sealed class TorneoDetalleState {
     object Loading : TorneoDetalleState()
     data class Success(
-        val posiciones: List<PosicionAHBA>,
-        val partidos: List<PartidoAHBA>,
-        val goleadores: List<GoleadorAHBA>,
-        val performancePoints: List<Float> = emptyList(),
-        val performanceLabels: List<String> = emptyList(),
+        val posiciones: ImmutableList<PosicionAHBA>,
+        val partidos: ImmutableList<PartidoAHBA>,
+        val goleadores: ImmutableList<GoleadorAHBA>,
+        val performancePoints: ImmutableList<Float> = persistentListOf(),
+        val performanceLabels: ImmutableList<String> = persistentListOf(),
         val targetTeam: String = ""
     ) : TorneoDetalleState()
     data class Error(val message: String) : TorneoDetalleState()
@@ -52,11 +56,11 @@ class TorneoDetalleViewModel @Inject constructor(
                 val performance = calculatePerformance(partidos, teamToAnalyze)
                 
                 _state.value = TorneoDetalleState.Success(
-                    posiciones, 
-                    partidos, 
-                    goleadores,
-                    performancePoints = performance.first,
-                    performanceLabels = performance.second,
+                    posiciones.toImmutableList(), 
+                    partidos.toImmutableList(), 
+                    goleadores.toImmutableList(),
+                    performancePoints = performance.first.toImmutableList(),
+                    performanceLabels = performance.second.toImmutableList(),
                     targetTeam = teamToAnalyze
                 )
             } catch (e: Exception) {

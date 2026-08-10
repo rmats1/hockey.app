@@ -55,6 +55,19 @@ class LoginViewModel @Inject constructor(
                 }
         }
     }
+
+    fun loginWithGoogle() {
+        viewModelScope.launch {
+            _state.value = LoginState.Loading
+            authService.signInWithGoogle()
+                .onSuccess {
+                    _state.value = LoginState.Success
+                }
+                .onFailure { error ->
+                    _state.value = LoginState.Error(error.message ?: "Error al conectar con Google")
+                }
+        }
+    }
     
     fun resetError() {
         _state.value = LoginState.Idle

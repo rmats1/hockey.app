@@ -9,18 +9,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.SportsHockey
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.hockey_app.R
+import kotlinx.coroutines.delay
+import nl.dionsegijn.konfetti.compose.KonfettiView
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun LoginScreen(
@@ -33,9 +45,12 @@ fun LoginScreen(
     val state by viewModel.state.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
+    var showConfetti by remember { mutableStateOf(false) }
 
     LaunchedEffect(state) {
         if (state is LoginState.Success) {
+            showConfetti = true
+            delay(1500)
             onNavigateToHome()
         } else if (state is LoginState.Error) {
             snackbarHostState.showSnackbar((state as LoginState.Error).message)
@@ -47,153 +62,193 @@ fun LoginScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = Color.White
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Logo
-            Box(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .size(110.dp)
-                    .shadow(25.dp, CircleShape)
-                    .background(MaterialTheme.colorScheme.primary, CircleShape),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.SportsHockey,
-                    contentDescription = null,
-                    modifier = Modifier.size(70.dp),
-                    tint = Color.White
-                )
-            }
+                Spacer(modifier = Modifier.height(60.dp))
 
-            Spacer(modifier = Modifier.height(30.dp))
+                // Premium Logo
+                Box(
+                    modifier = Modifier
+                        .size(110.dp)
+                        .shadow(25.dp, CircleShape, ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+                        .background(
+                            Brush.linearGradient(
+                                colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
+                            ),
+                            CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SportsHockey,
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp),
+                        tint = Color.White
+                    )
+                }
 
-            Text(
-                text = "Hockey AHBA",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary,
-                letterSpacing = (-1).sp
-            )
-            Text(
-                text = "ASOCIACIÓN DE HOCKEY DE BS. AS.",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Gray,
-                letterSpacing = 2.sp
-            )
+                Spacer(modifier = Modifier.height(30.dp))
 
-            Spacer(modifier = Modifier.height(50.dp))
-
-            // Google Login Button
-            OutlinedButton(
-                onClick = { /* TODO: Google Login */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp),
-                shape = RoundedCornerShape(15.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.SportsHockey, // Temporary icon
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = Color.Red
-                )
-                Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "CONTINUAR CON GOOGLE",
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    fontSize = 13.sp,
-                    letterSpacing = 0.5.sp
+                    text = "Hockey AHBA",
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = (-1.5).sp
                 )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
                 Text(
-                    "O USA TU EMAIL",
-                    modifier = Modifier.padding(horizontal = 15.dp),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "ASOCIACIÓN DE HOCKEY DE BS. AS.",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     color = Color.Gray,
-                    letterSpacing = 0.5.sp
+                    letterSpacing = 2.sp
                 )
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
 
-            Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-            // Email Field
-            OutlinedTextField(
-                value = email,
-                onValueChange = viewModel::onEmailChange,
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.AlternateEmail, contentDescription = null) },
-                shape = RoundedCornerShape(15.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true
-            )
+                // Google Login Button (Fixed and Polished)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .clip(RoundedCornerShape(15.dp)),
+                    onClick = viewModel::loginWithGoogle,
+                    shape = RoundedCornerShape(15.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEEEEEE)),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_google_logo),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = "CONTINUAR CON GOOGLE",
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF444444),
+                            fontSize = 13.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-            // Password Field
-            OutlinedTextField(
-                value = password,
-                onValueChange = viewModel::onPasswordChange,
-                label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                shape = RoundedCornerShape(15.dp),
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // Login Button
-            Button(
-                onClick = viewModel::login,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp),
-                shape = RoundedCornerShape(15.dp),
-                enabled = state !is LoginState.Loading
-            ) {
-                if (state is LoginState.Loading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFFEEEEEE))
                     Text(
-                        text = "INICIAR SESIÓN",
+                        "O USA TU EMAIL",
+                        modifier = Modifier.padding(horizontal = 15.dp),
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
+                        color = Color.LightGray,
                         letterSpacing = 1.sp
                     )
+                    HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFFEEEEEE))
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Fields and traditional login...
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = viewModel::onEmailChange,
+                    label = { Text("Email") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.AlternateEmail, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                    shape = RoundedCornerShape(15.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = Color(0xFFEEEEEE)
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = viewModel::onPasswordChange,
+                    label = { Text("Contraseña") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                    shape = RoundedCornerShape(15.dp),
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = Color(0xFFEEEEEE)
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Button(
+                    onClick = viewModel::login,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .shadow(10.dp, RoundedCornerShape(15.dp), ambientColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(15.dp),
+                    enabled = state !is LoginState.Loading
+                ) {
+                    if (state is LoginState.Loading) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Text(
+                            text = "INICIAR SESIÓN",
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "¿No tienes cuenta? ", color = Color.Gray, fontSize = 14.sp)
+                    TextButton(onClick = onNavigateToRegister) {
+                        Text(
+                            text = "Regístrate",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Register Link
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "¿No tienes cuenta? ", color = Color.Gray)
-                TextButton(onClick = onNavigateToRegister) {
-                    Text(
-                        text = "Regístrate",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+            if (showConfetti) {
+                KonfettiView(
+                    modifier = Modifier.fillMaxSize(),
+                    parties = listOf(
+                        Party(
+                            speed = 0f,
+                            maxSpeed = 30f,
+                            damping = 0.9f,
+                            spread = 360,
+                            colors = listOf(0xfce18a, 0xff726d, 0xf41331, 0xd82653),
+                            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100),
+                            position = Position.Relative(0.5, 0.3)
+                        )
                     )
-                }
+                )
             }
         }
     }

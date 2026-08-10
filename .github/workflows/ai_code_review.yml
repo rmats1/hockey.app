@@ -1,0 +1,38 @@
+name: AI Code Review (Council of Agents)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - develop
+
+jobs:
+  council-review:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Council of Agents Review
+        uses: google-adk/council-of-agents-action@v1
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # The action will automatically read persona definitions from AGENTS.md
+          # but we can also override or specify them here.
+          consensus_mode: "chairman"
+          model: "gemini-2.0-pro-exp" # Using the latest pro model for synthesis
+
+      - name: Post Review Summary
+        if: always()
+        run: |
+          echo "Council of Agents review process completed."

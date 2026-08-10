@@ -39,7 +39,7 @@ private val LightColorScheme = lightColorScheme(
 fun HockeyPlusTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Desactivado por defecto para mantener consistencia con la original
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

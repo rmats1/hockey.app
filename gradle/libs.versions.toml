@@ -1,16 +1,16 @@
 [versions]
-agp = "8.8.2"
+agp = "9.3.1"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-kotlin = "2.0.21"
+kotlin = "2.4.10"
 composeBom = "2024.10.01"
 # Nuevas versiones
-supabase = "3.0.0"
-hilt = "2.51.1"
+supabase = "3.7.0"
+hilt = "2.60.1"
 hiltNavigationCompose = "1.2.0"
 materialIconsExtended = "1.7.5"
 navigationCompose = "2.8.3"
@@ -18,17 +18,22 @@ coil = "2.7.0"
 firebaseBom = "33.5.1"
 googleAi = "0.7.0"
 serialization = "1.7.3"
-ktor = "2.3.12"
-ksp = "2.0.21-1.0.28"
+ktor = "3.1.1"
+ksp = "2.3.11"
 timber = "5.0.1"
-lottie = "6.7.1"
+lottie = "6.4.1"
 leakcanary = "2.14"
-chucker = "4.3.1"
+chucker = "4.0.0"
 mockk = "1.14.11"
 kotest = "6.2.3"
 turbine = "1.2.1"
 accompanist = "0.37.3"
 constraintlayoutCompose = "1.1.2"
+shimmer = "1.5.0"
+konfetti = "2.0.5"
+desugar_jdk_libs = "2.1.5"
+vicoVersion = "3.2.3"
+composeMaterialDialogs = "0.9.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +51,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 
 # Supabase
 supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
@@ -70,11 +76,14 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 # AI & Others
 google-generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "googleAi" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.1" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-client-bundled-plugins = { group = "io.ktor", name = "ktor-client-plugins", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 # Top 10 GitHub Skills/Libraries
@@ -86,17 +95,26 @@ chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-o
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.11.0" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 firebase-performance = { group = "com.google.firebase", name = "firebase-perf" }
 
+# Design Skills
+compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
+konfetti-compose = { group = "nl.dionsegijn", name = "konfetti-compose", version.ref = "konfetti" }
+vicoCore = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vicoVersion" }
+vicoCompose = { group = "com.patrykandpatrick.vico", name = "compose-android", version.ref = "vicoVersion" }
+vicoM3 = { group = "com.patrykandpatrick.vico", name = "compose-m3-android", version.ref = "vicoVersion" }
+material-dialogs-core = { group = "ca.gosyer", name = "compose-material-dialogs-core", version.ref = "composeMaterialDialogs" }
+material-dialogs-datetime = { group = "ca.gosyer", name = "compose-material-dialogs-datetime", version.ref = "composeMaterialDialogs" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.2" }
-firebase-perf = { id = "com.google.firebase.firebase-perf", version = "1.4.2" }
+google-services = { id = "com.google.gms.google-services", version = "4.5.0" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.7" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version = "2.0.2" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

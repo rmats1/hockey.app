@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
@@ -12,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.example.hockey_app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.hockey_app"
@@ -38,6 +37,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -47,16 +47,21 @@ hilt {
     enableAggregatingTask = false
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-    }
-}
+// kotlin block removed as jvmTarget is default and kotlin-android plugin is removed
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
     constraints {
         implementation("androidx.concurrent:concurrent-futures:1.1.0")
         implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
+        implementation("io.ktor:ktor-client-core:3.1.1")
+        implementation("io.ktor:ktor-client-okhttp:3.1.1")
+        implementation("io.ktor:ktor-client-android:3.1.1")
+        implementation("io.ktor:ktor-client-plugins:3.1.1")
+        implementation("io.ktor:ktor-client-content-negotiation:3.1.1")
+        implementation("io.ktor:ktor-client-auth:3.1.1")
+        implementation("io.ktor:ktor-client-logging:3.1.1")
+        implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.1")
     }
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -75,12 +80,15 @@ dependencies {
     implementation(libs.supabase.storage)
     implementation(libs.supabase.realtime)
     implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.bundled.plugins)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.collections.immutable)
 
     // DI - Hilt
     implementation(libs.hilt.android)
@@ -109,8 +117,17 @@ dependencies {
     implementation(libs.constraintlayout.compose)
     implementation(libs.firebase.performance)
 
+    // Design Skills
+    implementation(libs.compose.shimmer)
+    implementation(libs.konfetti.compose)
+    implementation(libs.vicoCompose)
+    implementation(libs.vicoM3)
+    implementation(libs.material.dialogs.core)
+    implementation(libs.material.dialogs.datetime)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.turbine)
     androidTestImplementation(composeBom)

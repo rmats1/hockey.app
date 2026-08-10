@@ -12,9 +12,12 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+
 sealed class TorneosState {
     object Loading : TorneosState()
-    data class Success(val torneos: List<TorneoResumen>) : TorneosState()
+    data class Success(val torneos: ImmutableList<TorneoResumen>) : TorneosState()
     data class Error(val message: String) : TorneosState()
 }
 
@@ -69,7 +72,7 @@ class TorneosViewModel @Inject constructor(
             
             matchesRama && matchesCat && matchesSearch
         }
-        _state.value = TorneosState.Success(filtered)
+        _state.value = TorneosState.Success(filtered.toImmutableList())
     }
 
     fun onSearchChange(query: String) {

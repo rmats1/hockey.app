@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.hockey_app.data.models.TorneoResumen
+import com.valentinilk.shimmer.shimmer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +39,6 @@ fun TorneosScreen(
         containerColor = Color(0xFFF5F5F5)
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            // Header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +102,6 @@ fun TorneosScreen(
                 }
             }
 
-            // Filters
             Column(modifier = Modifier.padding(16.dp)) {
                 Row {
                     RamaChip("Damas", filtroRama == "F") { viewModel.onRamaChange(if (it) "F" else "Todas") }
@@ -129,11 +128,24 @@ fun TorneosScreen(
                 }
             }
 
-            // List
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 when (val torneosState = state) {
                     is TorneosState.Loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        LazyColumn(
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(6) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp)
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .shimmer()
+                                        .background(Color.LightGray.copy(alpha = 0.3f))
+                                )
+                            }
+                        }
                     }
                     is TorneosState.Success -> {
                         if (torneosState.torneos.isEmpty()) {

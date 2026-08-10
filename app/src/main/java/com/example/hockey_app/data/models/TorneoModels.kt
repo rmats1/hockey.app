@@ -1,7 +1,10 @@
 package com.example.hockey_app.data.models
 
+import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.serialization.Serializable
 
+@Immutable
 @Serializable
 data class TorneoResumen(
     val id: String,
@@ -12,6 +15,7 @@ data class TorneoResumen(
     val temporada: String
 )
 
+@Immutable
 @Serializable
 data class PartidoAHBA(
     val id: String,
@@ -26,6 +30,7 @@ data class PartidoAHBA(
     val jugado: Boolean
 )
 
+@Immutable
 @Serializable
 data class PosicionAHBA(
     val puesto: Int,
@@ -40,6 +45,7 @@ data class PosicionAHBA(
     val golesEnContra: Int = 0
 )
 
+@Immutable
 @Serializable
 data class GoleadorAHBA(
     val nombreCompleto: String,
@@ -48,10 +54,11 @@ data class GoleadorAHBA(
     val goles: Int
 )
 
+@Immutable
 @Serializable
 data class TorneoCompleto(
     val id: String,
-    val todosLosPartidos: List<PartidoAHBA>,
-    val tablaGeneral: List<PosicionAHBA>,
-    val goleadores: List<GoleadorAHBA>
+    val todosLosPartidos: ImmutableList<PartidoAHBA>,
+    val tablaGeneral: ImmutableList<PosicionAHBA>,
+    val goleadores: ImmutableList<GoleadorAHBA>
 )
