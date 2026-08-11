@@ -1,6 +1,8 @@
 name: AHBA_Data_Sync_Runner
 
 on:
+  push:
+    branches: [ "master" ] # Se ejecutará solo cada vez que subamos un cambio
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
