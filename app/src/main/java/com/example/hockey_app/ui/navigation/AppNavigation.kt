@@ -29,7 +29,9 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Register : Screen("register")
     object Onboarding : Screen("onboarding")
-    object TacticalBoard : Screen("tactical_board")
+    object TacticalBoard : Screen("tactical_board?clubEscudo={clubEscudo}") {
+        fun createRoute(clubEscudo: String?) = "tactical_board?clubEscudo=${if (clubEscudo.isNullOrEmpty()) "none" else clubEscudo}"
+    }
     object Settings : Screen("settings")
     object CompareClubs : Screen("compare_clubs")
     object FavoriteClubs : Screen("favorite_clubs")
@@ -100,8 +102,8 @@ fun AppNavigation() {
                 onNavigateToTorneoDetalle = { torneo, mode ->
                     navController.navigate(Screen.TorneoDetalle.createRoute(torneo, mode))
                 },
-                onNavigateToTacticalBoard = {
-                    navController.navigate(Screen.TacticalBoard.route)
+                onNavigateToTacticalBoard = { escudo ->
+                    navController.navigate(Screen.TacticalBoard.createRoute(escudo))
                 },
                 onNavigateToCompareClubs = {
                     navController.navigate(Screen.CompareClubs.route)
@@ -185,9 +187,14 @@ fun AppNavigation() {
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(Screen.TacticalBoard.route) {
+        composable(
+            route = Screen.TacticalBoard.route,
+            arguments = listOf(navArgument("clubEscudo") { defaultValue = "none" })
+        ) { backStackEntry ->
+            val escudo = backStackEntry.arguments?.getString("clubEscudo").let { if (it == "none") null else it }
             TacticalBoardScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                clubEscudo = escudo
             )
         }
         composable(Screen.CompareClubs.route) {

@@ -86,15 +86,43 @@ class AuthService @Inject constructor(
     suspend fun getCurrentUser(): UserModel? = withContext(Dispatchers.IO) {
         try {
             val session = auth.currentSessionOrNull() ?: return@withContext null
-            val userId = session.user?.id ?: return@withContext null
+            val user = session.user ?: return@withContext null
+            val userId = user.id
             
-            postgrest.from("profiles")
+            val profile = postgrest.from("profiles")
                 .select(columns = Columns.ALL) {
                     filter {
                         eq("id", userId)
                     }
                 }
                 .decodeSingleOrNull<UserModel>()
+
+            if (profile == null) {
+                // Primer login con Google: crear perfil inicial con metadata
+                val googleName = user.userMetadata?.get("full_name")?.toString()?.trim('"') 
+                    ?: user.userMetadata?.get("name")?.toString()?.trim('"') 
+                    ?: "Usuario"
+                val googlePhoto = user.userMetadata?.get("avatar_url")?.toString()?.trim('"') 
+                    ?: user.userMetadata?.get("picture")?.toString()?.trim('"')
+
+                val newUser = UserModel(
+                    id = userId,
+                    email = user.email ?: "",
+                    nombre = googleName,
+                    foto_url = googlePhoto
+                )
+                try {
+                    postgrest.from("profiles").insert(newUser)
+                    saveUserLocally(newUser)
+                    return@withContext newUser
+                } catch (e: Exception) {
+                    // Si falla el insert, retornamos el modelo localmente al menos
+                    return@withContext newUser
+                }
+            }
+            
+            saveUserLocally(profile)
+            profile
         } catch (ignore: Exception) {
             null
         }

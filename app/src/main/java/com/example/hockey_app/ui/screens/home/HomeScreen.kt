@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToTorneoDetalle: (com.example.hockey_app.data.models.TorneoResumen, TorneoDetalleMode) -> Unit,
-    onNavigateToTacticalBoard: () -> Unit,
+    onNavigateToTacticalBoard: (String?) -> Unit,
     onNavigateToCompareClubs: () -> Unit,
     onNavigateToFavoriteClubs: () -> Unit,
     onNavigateToSearchPlayers: () -> Unit,
@@ -105,7 +105,7 @@ fun HomeScreen(
                     3 -> if (user!!.user_type == "cuerpo_tecnico") {
                         CoachPanelScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
-                            onNavigateToTacticalBoard = onNavigateToTacticalBoard,
+                            onNavigateToTacticalBoard = { onNavigateToTacticalBoard(user?.club_escudo) },
                             onNavigateToCallUpManagement = onNavigateToCallUpManagement,
                             onNavigateToSearchPlayers = onNavigateToSearchPlayers,
                             onNavigateToPhysicalPlanning = onNavigateToPhysicalPlanning
@@ -114,7 +114,7 @@ fun HomeScreen(
                         MyTeamScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
                             onConfigureClub = { viewModel.onTabSelected(4) },
-                            onNavigateToTacticalBoard = onNavigateToTacticalBoard
+                            onNavigateToTacticalBoard = { onNavigateToTacticalBoard(user?.club_escudo) }
                         )
                     }
                     4 -> ProfileScreen(

@@ -28,7 +28,10 @@ object SupabaseModule {
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_KEY
         ) {
-            install(Auth)
+            install(Auth) {
+                scheme = "hockeyapp"
+                host = "login-callback"
+            }
             install(Postgrest)
             install(Storage)
             install(Realtime)

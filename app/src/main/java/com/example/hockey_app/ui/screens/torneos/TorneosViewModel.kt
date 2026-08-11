@@ -48,10 +48,22 @@ class TorneosViewModel @Inject constructor(
     private fun loadTorneos() {
         viewModelScope.launch {
             _state.value = TorneosState.Loading
-            val list = dataService.getTorneosResumen()
-            _allTorneos.value = list.filter { it.temporada == "2026" }
-                .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
-            applyFilters()
+            try {
+                // Sincronizar desde Supabase en lugar de assets
+                val list = supabaseService.getTorneos()
+                if (list.isEmpty()) {
+                    // Fallback a assets si Supabase está vacío o hay error
+                    val fallback = dataService.getTorneosResumen()
+                    _allTorneos.value = fallback.filter { it.temporada == "2026" }
+                        .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
+                } else {
+                    _allTorneos.value = list.filter { it.temporada == "2026" }
+                        .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
+                }
+                applyFilters()
+            } catch (e: Exception) {
+                _state.value = TorneosState.Error(e.message ?: "Error al cargar torneos")
+            }
         }
     }
 

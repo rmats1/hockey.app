@@ -11,9 +11,13 @@ PASSPHRASE = "uweoEVNeycw7CFBXtHNCy3nbJZmUPl0EosXGRrNDgdU="
 API_BASE_URL = "https://api.tournamenttracker.buenosaireshockey.ar"
 FEDERACION_ID = "001"
 
-# Supabase (Extraído de SupabaseModule.kt)
-SUPABASE_URL = "https://hpvsvsvrdlucuxcdrgbg.supabase.co"
-SUPABASE_KEY = "sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7" # Idealmente usar SERVICE_ROLE_KEY para backend sync
+# Supabase (Configuración desde variables de entorno para mayor seguridad)
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hpvsvsvrdlucuxcdrgbg.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") # Usar service_role para permisos de escritura
+
+if not SUPABASE_KEY:
+    print("[-] ERROR: No se encontró SUPABASE_SERVICE_ROLE_KEY en las variables de entorno.")
+    exit(1)
 
 # Inicializar Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)

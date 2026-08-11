@@ -23,4 +23,7 @@ jobs:
           pip install requests cryptography supabase
 
       - name: Run synchronization script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: python scripts/supabase_sync.py

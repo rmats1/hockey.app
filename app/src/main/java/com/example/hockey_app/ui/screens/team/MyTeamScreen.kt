@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.hockey_app.data.models.CallUpModel
 import com.example.hockey_app.data.models.TrainingPlanModel
 import com.example.hockey_app.ui.screens.register.SectionHeader
@@ -85,7 +86,11 @@ fun MyTeamScreen(
                         .verticalScroll(scrollState)
                 ) {
                     // Club Header
-                    TeamHeader(user!!.club_nombre, "${user!!.categoria} • ${user!!.division ?: "General"}")
+                    TeamHeader(
+                        clubName = user!!.club_nombre, 
+                        subtitle = "${user!!.categoria} • ${user!!.division ?: "General"}",
+                        escudoUrl = user!!.club_escudo
+                    )
 
                     Column(modifier = Modifier.padding(24.dp)) {
                         SectionHeader("ESTADO DE CITACIÓN")
@@ -140,7 +145,7 @@ fun NoClubContent(onConfigureClub: () -> Unit) {
 }
 
 @Composable
-fun TeamHeader(clubName: String, subtitle: String) {
+fun TeamHeader(clubName: String, subtitle: String, escudoUrl: String?) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,7 +159,20 @@ fun TeamHeader(clubName: String, subtitle: String) {
                     .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.SportsHockey, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(30.dp))
+                if (escudoUrl != null) {
+                    AsyncImage(
+                        model = escudoUrl,
+                        contentDescription = "Escudo del Club",
+                        modifier = Modifier.size(45.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.SportsHockey, 
+                        contentDescription = null, 
+                        tint = MaterialTheme.colorScheme.secondary, 
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column {

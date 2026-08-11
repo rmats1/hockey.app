@@ -13,6 +13,18 @@ class SupabaseService @Inject constructor(
     private val postgrest: Postgrest
 ) {
 
+    suspend fun getTorneos(): List<TorneoResumen> = withContext(Dispatchers.IO) {
+        try {
+            postgrest.from("torneos")
+                .select() {
+                    order("nombre", order = Order.ASCENDING)
+                }
+                .decodeList<TorneoResumen>()
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     suspend fun getPosiciones(torneoId: String): List<PosicionAHBA> = withContext(Dispatchers.IO) {
         try {
             postgrest.from("posiciones")
