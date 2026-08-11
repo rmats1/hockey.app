@@ -1,4 +1,4 @@
-name: AHBA Data Sync
+name: AHBA_Data_Sync_Runner
 
 on:
   schedule:
