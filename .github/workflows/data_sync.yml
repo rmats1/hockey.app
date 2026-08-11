@@ -1,9 +1,9 @@
-name: AHBA Data Sync
+name: AHBA Data Sync (Global)
 
 on:
   schedule:
     - cron: '0 */6 * * *' # Ejecutar cada 6 horas
-  workflow_dispatch: # Permitir ejecución manual
+  workflow_dispatch: # Permitir ejecución manual (Botón Run Workflow)
 
 jobs:
   sync:
