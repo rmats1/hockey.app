@@ -2,8 +2,10 @@ package com.example.hockey_app.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hockey_app.data.services.AuthService
+import com.example.hockey_app.domain.auth.AuthRepository
+import com.example.hockey_app.domain.auth.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +20,8 @@ sealed class LoginState {
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authService: AuthService
+    private val authRepository: AuthRepository,
+    private val signIn: SignInUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
@@ -46,7 +49,7 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             _state.value = LoginState.Loading
-            authService.signInWithEmail(_email.value, _password.value)
+            signIn(_email.value, _password.value)
                 .onSuccess {
                     _state.value = LoginState.Success
                 }
@@ -56,16 +59,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun loginWithGoogle() {
+    init {
         viewModelScope.launch {
-            _state.value = LoginState.Loading
-            authService.signInWithGoogle()
-                .onSuccess {
+            authRepository.sessionStatus.collect { status ->
+                if (status is SessionStatus.Authenticated) {
                     _state.value = LoginState.Success
                 }
-                .onFailure { error ->
-                    _state.value = LoginState.Error(error.message ?: "Error al conectar con Google")
-                }
+            }
         }
     }
     

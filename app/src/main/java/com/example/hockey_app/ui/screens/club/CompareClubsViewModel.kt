@@ -3,7 +3,7 @@ package com.example.hockey_app.ui.screens.club
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.ClubModel
-import com.example.hockey_app.data.services.DataService
+import com.example.hockey_app.domain.catalog.CatalogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CompareClubsViewModel @Inject constructor(
-    private val dataService: DataService
+    private val dataService: CatalogRepository
 ) : ViewModel() {
 
     private val _clubes = MutableStateFlow<List<ClubModel>>(emptyList())

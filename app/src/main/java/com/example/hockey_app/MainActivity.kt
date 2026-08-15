@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Manejar Deep Links de Supabase (Google Login)
-        supabaseClient.handleDeeplinks(intent)
+        // Only process the exact callback shape registered in the manifest.
+        handleSupabaseDeepLink(intent)
         
         // Seguridad: Prevenir capturas de pantalla
         SecurityUtils.setSecureWindow(this)
@@ -55,7 +55,18 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        supabaseClient.handleDeeplinks(intent)
+        handleSupabaseDeepLink(intent)
+    }
+
+    private fun handleSupabaseDeepLink(intent: Intent) {
+        val isSupabaseCallback =
+            intent.action == Intent.ACTION_VIEW &&
+                intent.data?.scheme == "hockeyapp" &&
+                intent.data?.host == "login-callback"
+
+        if (isSupabaseCallback) {
+            supabaseClient.handleDeeplinks(intent)
+        }
     }
 }
 

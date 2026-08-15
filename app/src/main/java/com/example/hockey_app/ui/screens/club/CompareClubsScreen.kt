@@ -18,12 +18,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hockey_app.data.models.ClubModel
+import coil.compose.AsyncImage
 
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -124,21 +126,45 @@ fun CompareClubsScreen(
     }
 
     if (selectingForClub != null) {
+        var searchQuery by remember { mutableStateOf("") }
+        val filteredClubes = remember(searchQuery, clubes) {
+            if (searchQuery.isBlank()) clubes
+            else clubes.filter { it.nombre.contains(searchQuery, ignoreCase = true) }
+        }
+
         ModalBottomSheet(
             onDismissRequest = { selectingForClub = null }
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp).fillMaxHeight(0.8f)) {
                 Text(
                     "Seleccionar Club",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    fontWeight = FontWeight.Black,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
-                LazyColumn(modifier = Modifier.height(400.dp)) {
-                    items(clubes) { club ->
+
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Buscar club...") },
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    leadingIcon = { Icon(Icons.Default.SportsHockey, contentDescription = null) },
+                    singleLine = true
+                )
+
+                LazyColumn(modifier = Modifier.weight(1f)) {
+                    items(filteredClubes) { club ->
                         ListItem(
                             headlineContent = { Text(club.nombre, fontWeight = FontWeight.SemiBold) },
-                            leadingContent = { Icon(Icons.Default.SportsHockey, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                            leadingContent = {
+                                AsyncImage(
+                                    model = club.escudoUrl,
+                                    contentDescription = "Escudo de ${club.nombre}",
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.size(40.dp)
+                                )
+                            },
                             modifier = Modifier.clickable {
                                 if (selectingForClub == 1) club1 = club else club2 = club
                                 selectingForClub = null
@@ -168,7 +194,16 @@ private fun ClubSelectorBox(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(Icons.Default.SportsHockey, contentDescription = null, modifier = Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
+            if (selectedClub?.escudoUrl != null) {
+                AsyncImage(
+                    model = selectedClub.escudoUrl,
+                    contentDescription = "Escudo de ${selectedClub.nombre}",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.size(48.dp)
+                )
+            } else {
+                Icon(Icons.Default.SportsHockey, contentDescription = null, modifier = Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
+            }
             Spacer(modifier = Modifier.height(6.dp))
             Text(label, fontSize = 10.sp, color = Color.Gray)
             Text(

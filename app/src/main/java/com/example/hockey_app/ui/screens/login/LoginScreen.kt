@@ -9,17 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.SportsHockey
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import com.example.hockey_app.ui.components.HockeySticksLogo
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.hockey_app.R
 import kotlinx.coroutines.delay
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
@@ -111,60 +107,9 @@ fun LoginScreen(
                     letterSpacing = 2.sp
                 )
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(80.dp))
 
-                // Google Login Button (Fixed and Polished)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp)
-                        .clip(RoundedCornerShape(15.dp)),
-                    onClick = viewModel::loginWithGoogle,
-                    shape = RoundedCornerShape(15.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEEEEEE)),
-                    elevation = CardDefaults.cardElevation(2.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_google_logo),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "CONTINUAR CON GOOGLE",
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF444444),
-                            fontSize = 13.sp,
-                            letterSpacing = 0.5.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFFEEEEEE))
-                    Text(
-                        "O USA TU EMAIL",
-                        modifier = Modifier.padding(horizontal = 15.dp),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.LightGray,
-                        letterSpacing = 1.sp
-                    )
-                    HorizontalDivider(modifier = Modifier.weight(1f), color = Color(0xFFEEEEEE))
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                // Fields and traditional login...
+                // Email Field
                 OutlinedTextField(
                     value = email,
                     onValueChange = viewModel::onEmailChange,
@@ -182,6 +127,7 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Password Field
                 OutlinedTextField(
                     value = password,
                     onValueChange = viewModel::onPasswordChange,
@@ -200,8 +146,9 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
+                // Login Button
                 Button(
-                    onClick = viewModel::login,
+                    onClick = { viewModel.login() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
@@ -222,6 +169,7 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
+                // Register Link
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "¿No tienes cuenta? ", color = Color.Gray, fontSize = 14.sp)
                     TextButton(onClick = onNavigateToRegister) {

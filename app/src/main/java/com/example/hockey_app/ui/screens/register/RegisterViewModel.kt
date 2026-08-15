@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.ClubModel
 import com.example.hockey_app.data.models.UserModel
-import com.example.hockey_app.data.services.AuthService
 import com.example.hockey_app.data.services.DataService
+import com.example.hockey_app.domain.auth.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,8 +21,8 @@ sealed class RegisterState {
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val authService: AuthService,
-    private val dataService: DataService
+    private val registerUser: RegisterUserUseCase,
+    private val dataService: DataService,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<RegisterState>(RegisterState.Idle)
@@ -88,7 +88,7 @@ class RegisterViewModel @Inject constructor(
                 rol_cuerpo_tecnico = rolCuerpoTecnico.value
             )
 
-            authService.signUpWithEmail(email.value.trim(), password.value, userMetadata)
+            registerUser(email.value.trim(), password.value, userMetadata)
                 .onSuccess {
                     _state.value = RegisterState.Success
                 }

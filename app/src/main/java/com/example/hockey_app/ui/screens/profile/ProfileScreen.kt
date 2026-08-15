@@ -1,5 +1,8 @@
 package com.example.hockey_app.ui.screens.profile
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,6 +44,15 @@ fun ProfileScreen(
     val user by viewModel.user.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            if (uri != null) {
+                viewModel.uploadPhoto(uri)
+            }
+        }
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -77,7 +89,11 @@ fun ProfileScreen(
                     .verticalScroll(scrollState)
             ) {
                 // Header with Photos
-                ProfileHeader(user!!)
+                ProfileHeader(user!!, onEditPhoto = {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                })
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -125,7 +141,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileHeader(user: UserModel) {
+fun ProfileHeader(user: UserModel, onEditPhoto: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -140,7 +156,8 @@ fun ProfileHeader(user: UserModel) {
                     .size(90.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                    .border(3.dp, Color.White, CircleShape),
+                    .border(3.dp, Color.White, CircleShape)
+                    .clickable { onEditPhoto() },
                 contentAlignment = Alignment.Center
             ) {
                 if (!user.foto_url.isNullOrEmpty()) {
@@ -151,12 +168,7 @@ fun ProfileHeader(user: UserModel) {
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
-                    Text(
-                        text = if (user.nombre.isNotEmpty()) user.nombre[0].toString().uppercase() else "?",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Black,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 }
             }
 

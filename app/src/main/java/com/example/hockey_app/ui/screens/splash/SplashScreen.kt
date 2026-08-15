@@ -32,8 +32,11 @@ fun SplashScreen(
     val alpha = remember { Animatable(0f) }
 
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+    val isReady by viewModel.isReady.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(isReady) {
+        if (!isReady) return@LaunchedEffect
+
         scale.animateTo(
             targetValue = 1f,
             animationSpec = spring(
@@ -43,7 +46,7 @@ fun SplashScreen(
         )
         alpha.animateTo(1f, tween(1000))
         
-        delay(1500)
+        delay(1000)
         
         if (isLoggedIn) {
             onNavigateToHome()

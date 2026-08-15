@@ -1,6 +1,7 @@
 package com.example.hockey_app.data.models
 
 import androidx.compose.runtime.Immutable
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Immutable
@@ -8,5 +9,5 @@ import kotlinx.serialization.Serializable
 data class ClubModel(
     val id: String,
     val nombre: String,
-    val escudoUrl: String? = null
+    @SerialName("escudo_url") val escudoUrl: String? = null
 )

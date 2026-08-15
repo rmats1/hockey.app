@@ -35,6 +35,7 @@ fun FixtureScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val rama by viewModel.rama.collectAsStateWithLifecycle()
     val categoria by viewModel.categoria.collectAsStateWithLifecycle()
+    val categoriasDisponibles by viewModel.categoriasDisponibles.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Color(0xFFF5F5F5)
@@ -95,7 +96,7 @@ fun FixtureScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val categorias = listOf("Todas", "Primera", "Intermedia", "Segunda", "Cuarta", "Quinta", "Sexta", "Septima", "Octava", "Novena", "10ma")
+                val categorias = listOf("Todas") + categoriasDisponibles
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(categorias) { cat ->
                         FilterChip(

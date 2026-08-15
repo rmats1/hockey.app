@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.ClubModel
 import com.example.hockey_app.data.models.FavoritoModel
-import com.example.hockey_app.data.services.AuthService
-import com.example.hockey_app.data.services.DataService
-import com.example.hockey_app.data.services.SupabaseService
+import com.example.hockey_app.domain.auth.AuthRepository
+import com.example.hockey_app.domain.catalog.CatalogRepository
+import com.example.hockey_app.domain.competition.CompetitionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,9 +21,9 @@ sealed class FavoriteClubsState {
 
 @HiltViewModel
 class FavoriteClubsViewModel @Inject constructor(
-    private val dataService: DataService,
-    private val supabaseService: SupabaseService,
-    private val authService: AuthService
+    private val dataService: CatalogRepository,
+    private val supabaseService: CompetitionRepository,
+    private val authService: AuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<FavoriteClubsState>(FavoriteClubsState.Loading)

@@ -35,6 +35,7 @@ fun TorneosScreen(
     val busqueda by viewModel.busqueda.collectAsStateWithLifecycle()
     val filtroRama by viewModel.filtroRama.collectAsStateWithLifecycle()
     val filtroCategoria by viewModel.filtroCategoria.collectAsStateWithLifecycle()
+    val categoriasDisponibles by viewModel.categoriasDisponibles.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Color(0xFFF5F5F5)
@@ -112,7 +113,7 @@ fun TorneosScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val categorias = listOf("Todas", "Primera", "Intermedia", "Segunda", "Cuarta", "Quinta", "Sexta", "Septima", "Octava", "Novena", "10ma")
+                val categorias = listOf("Todas") + categoriasDisponibles
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(categorias) { cat ->
                         FilterChip(

@@ -1,0 +1,39 @@
+appId: com.example.hockey_app
+---
+# Simulación de flujo completo para Hockey App
+
+- launchApp
+
+# 1. Esperar a que pase la Splash Screen
+- extendedWaitUntil:
+    visible: "Hockey AHBA"
+    timeout: 5000
+
+# 2. Simular Login con Google
+- tapOn: "CONTINUAR CON GOOGLE"
+- stopApp # En una simulación real de Maestro, esto abriría el navegador. 
+- launchApp # Simulamos el regreso tras el Deep Link
+
+# 3. Verificar carga de datos en Inicio (Home)
+- assertVisible: "TORNEOS"
+- assertVisible: "FIXTURE"
+
+# 4. Navegar a Torneos y probar filtros
+- tapOn: "TORNEOS"
+- tapOn: "Damas"
+- tapOn: "Primera"
+- scroll
+
+# 5. Entrar a un torneo específico (si hay datos)
+- tapOn:
+    id: ".*" # Toca el primer elemento de la lista
+- assertVisible: "TABLA"
+- assertVisible: "PARTIDOS"
+
+# 6. Pizarra Táctica
+- tapOn: "EQUIPO"
+- tapOn: "Pizarra Táctica"
+- assertVisible: "PIZARRA TÁCTICA"
+- swipe:
+    start: 50%, 50%
+    end: 50%, 20%

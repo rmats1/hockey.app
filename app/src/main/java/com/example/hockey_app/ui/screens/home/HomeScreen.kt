@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import com.example.hockey_app.ui.screens.coach.CoachPanelScreen
 import com.example.hockey_app.ui.screens.fixture.FixtureScreen
 import com.example.hockey_app.ui.screens.news.NewsScreen
@@ -212,12 +214,21 @@ fun HomeDrawerContent(
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (user.nombre.isNotEmpty()) user.nombre[0].toString().uppercase() else "?",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Black,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    if (!user.foto_url.isNullOrEmpty()) {
+                        AsyncImage(
+                            model = user.foto_url,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Text(
+                            text = if (user.nombre.isNotEmpty()) user.nombre[0].toString().uppercase() else "?",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(user.nombre, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)

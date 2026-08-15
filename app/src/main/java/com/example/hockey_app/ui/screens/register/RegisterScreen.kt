@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.hockey_app.data.constants.AppConstants
+import com.example.hockey_app.data.constants.CompetitionCatalog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,7 +158,7 @@ fun RegisterScreen(
             DropdownField(
                 label = "Categoría (Torneo)",
                 icon = Icons.Default.EmojiEvents,
-                items = AppConstants.CATEGORIAS,
+                items = CompetitionCatalog.categories(rama),
                 selectedItem = categoria,
                 onItemSelected = { viewModel.categoria.value = it }
             )
@@ -413,13 +414,15 @@ fun DropdownField(
 
 @Composable
 fun DivisionSelector(viewModel: RegisterViewModel) {
+    val rama by viewModel.rama.collectAsStateWithLifecycle()
+    val categoria by viewModel.categoria.collectAsStateWithLifecycle()
     val selectedDivision by viewModel.division.collectAsStateWithLifecycle()
 
     Column {
         Text("División (A, B, C...)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            AppConstants.DIVISIONES.forEach { d ->
+            CompetitionCatalog.divisions(rama, categoria).forEach { d ->
                 val isSelected = selectedDivision == d
                 Box(
                     modifier = Modifier

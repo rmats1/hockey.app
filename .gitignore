@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Python and local automation artifacts
+__pycache__/
+*.py[cod]

@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.GoleadorAHBA
 import com.example.hockey_app.data.models.PosicionAHBA
 import com.example.hockey_app.data.models.TorneoResumen
-import com.example.hockey_app.data.services.DataService
-import com.example.hockey_app.data.services.SupabaseService
+import com.example.hockey_app.domain.catalog.CatalogRepository
+import com.example.hockey_app.domain.competition.CompetitionRepository
+import com.example.hockey_app.data.constants.CompetitionCatalog
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +25,8 @@ sealed class TorneosState {
 
 @HiltViewModel
 class TorneosViewModel @Inject constructor(
-    private val dataService: DataService,
-    private val supabaseService: SupabaseService
+    private val dataService: CatalogRepository,
+    private val supabaseService: CompetitionRepository
 ) : ViewModel() {
 
     private val _allTorneos = MutableStateFlow<List<TorneoResumen>>(emptyList())
@@ -39,6 +41,8 @@ class TorneosViewModel @Inject constructor(
 
     private val _filtroCategoria = MutableStateFlow("Todas")
     val filtroCategoria: StateFlow<String> = _filtroCategoria
+    private val _categoriasDisponibles = MutableStateFlow(CompetitionCatalog.categories("Damas"))
+    val categoriasDisponibles: StateFlow<List<String>> = _categoriasDisponibles
 
     init {
         loadTorneos()
@@ -49,19 +53,29 @@ class TorneosViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = TorneosState.Loading
             try {
-                // Sincronizar desde Supabase en lugar de assets
+                // Prioridad absoluta a Supabase para tener datos reales de 2026
                 val list = supabaseService.getTorneos()
-                if (list.isEmpty()) {
-                    // Fallback a assets si Supabase está vacío o hay error
-                    val fallback = dataService.getTorneosResumen()
-                    _allTorneos.value = fallback.filter { it.temporada == "2026" }
-                        .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
+                Timber.d("Torneos received from Supabase: ${list.size}")
+                
+                val processedList = if (list.isEmpty()) {
+                    // Fallback solo a los de 2026 en assets si la nube está vacía
+                    val fallback = dataService.getTorneosResumen().filter { it.temporada == "2026" }
+                    Timber.d("Fallback to assets 2026: ${fallback.size}")
+                    fallback
                 } else {
-                    _allTorneos.value = list.filter { it.temporada == "2026" }
-                        .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
+                    val filtered = list.filter { it.temporada == "2026" }
+                    Timber.d("Filtered Supabase torneos for 2026: ${filtered.size}")
+                    filtered
                 }
+
+                if (processedList.isEmpty()) {
+                    Timber.w("No torneos found for 2026 in Supabase or Assets")
+                }
+
+                _allTorneos.value = processedList.distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
                 applyFilters()
             } catch (e: Exception) {
+                Timber.e(e, "Error loading torneos")
                 _state.value = TorneosState.Error(e.message ?: "Error al cargar torneos")
             }
         }
@@ -75,7 +89,13 @@ class TorneosViewModel @Inject constructor(
 
     private fun applyFilters() {
         val filtered = _allTorneos.value.filter { t ->
-            val matchesRama = _filtroRama.value == "Todas" || t.rama == _filtroRama.value
+            val matchesRama = _filtroRama.value == "Todas" || 
+                t.rama.contains(_filtroRama.value, ignoreCase = true) ||
+                (t.rama == "Femenino" && _filtroRama.value == "F") ||
+                (t.rama == "Damas" && _filtroRama.value == "F") ||
+                (t.rama == "Masculino" && _filtroRama.value == "M") ||
+                (t.rama == "Caballeros" && _filtroRama.value == "M")
+            
             val matchesCat = _filtroCategoria.value == "Todas" || t.categoria.contains(_filtroCategoria.value, ignoreCase = true)
             val matchesSearch = _busqueda.value.isBlank() || 
                 t.nombre.contains(_busqueda.value, ignoreCase = true) ||
@@ -93,6 +113,13 @@ class TorneosViewModel @Inject constructor(
 
     fun onRamaChange(rama: String) {
         _filtroRama.value = rama
+        updateAvailableCategories(rama)
+        if (_filtroCategoria.value != "Todas" && _filtroCategoria.value !in _categoriasDisponibles.value) _filtroCategoria.value = "Todas"
+    }
+
+    private fun updateAvailableCategories(branchFilter: String = _filtroRama.value) {
+        val branch = when (branchFilter) { "F" -> "Damas"; "M" -> "Caballeros"; else -> null }
+        _categoriasDisponibles.value = if (branch == null) _allTorneos.value.map { it.categoria }.filter { it.isNotBlank() }.distinct().ifEmpty { CompetitionCatalog.categories("Damas") + CompetitionCatalog.categories("Caballeros") } else _allTorneos.value.filter { it.rama.contains(if (branch == "Damas") "Femen" else "Mascul", true) || it.rama == branch }.map { it.categoria }.filter { it.isNotBlank() }.distinct().ifEmpty { CompetitionCatalog.categories(branch) }
     }
 
     fun onCategoriaChange(cat: String) {

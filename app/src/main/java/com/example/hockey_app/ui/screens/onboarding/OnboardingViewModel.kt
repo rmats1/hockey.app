@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.ClubModel
 import com.example.hockey_app.data.models.UserModel
-import com.example.hockey_app.data.services.AuthService
-import com.example.hockey_app.data.services.DataService
+import com.example.hockey_app.domain.auth.AuthRepository
+import com.example.hockey_app.domain.catalog.CatalogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,8 +21,8 @@ sealed class OnboardingState {
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val authService: AuthService,
-    private val dataService: DataService
+    private val authService: AuthRepository,
+    private val dataService: CatalogRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<OnboardingState>(OnboardingState.Idle)
@@ -74,7 +74,7 @@ class OnboardingViewModel @Inject constructor(
                 rol_cuerpo_tecnico = rolCuerpoTecnico.value
             )
 
-            authService.completeProfile(updatedUser)
+            authService.updateProfile(updatedUser)
                 .onSuccess {
                     _state.value = OnboardingState.Success
                 }

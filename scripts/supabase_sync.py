@@ -64,7 +64,7 @@ def sync_data():
         for c in clubes:
             if not c.get("clubId"): continue
             data = {
-                "id": c["clubId"],
+                "id": int(c["clubId"]),
                 "nombre": c["club"],
                 "escudo_url": c.get("clubEscudo")
             }
@@ -76,15 +76,31 @@ def sync_data():
 
     # 2. Sincronizar Torneos y su Contenido
     raw_context = fetch_api("/get-context")
-    if not raw_context: return
+    if not raw_context:
+        print("[-] ERROR: No se pudo obtener el contexto de la API.")
+        return
 
     context = json.loads(raw_context)
-    seasons = ["008"] # 2026
+    print(f"[*] Contexto obtenido. Temporadas disponibles: {[s.get('id') for s in context]}")
 
-    for season in context:
-        if season.get("id") not in seasons: continue
+    # Buscamos la temporada 2026 (sea por ID "008" o por nombre)
+    seasons_to_sync = []
+    for s in context:
+        if s.get("id") == "008" or "2026" in str(s.get("nombre", "")):
+            seasons_to_sync.append(s["id"])
+            print(f"[*] Temporada 2026 detectada con ID: {s['id']}")
 
-        for fed in season.get("federaciones", []):
+    if not seasons_to_sync:
+        print("[!] ADVERTENCIA: No se encontró una temporada marcada como 2026. Usando ID 008 por defecto.")
+        seasons_to_sync = ["008"]
+
+    for season_id in seasons_to_sync:
+        print(f"[*] Procesando temporada ID: {season_id}")
+        # Obtener los datos de la temporada específica del contexto
+        season_data = next((s for s in context if s["id"] == season_id), None)
+        if not season_data: continue
+
+        for fed in season_data.get("federaciones", []):
             if fed.get("id") != FEDERACION_ID: continue
 
             for rama in fed.get("ramas", []):
@@ -128,41 +144,60 @@ def sync_data():
                                     p_data = {
                                         "id": p["id"],
                                         "torneo_id": t_id,
-                                        "nombre_local": p["nombreLocal"],
-                                        "nombre_visitante": p["nombreVisitante"],
-                                        "escudo_local": p.get("escudoLocal"),
-                                        "escudo_visitante": p.get("escudoVisitante"),
-                                        "goles_local": p.get("golesLocal"),
-                                        "goles_visitante": p.get("golesVisitante"),
-                                        "horario": p.get("horario"),
-                                        "numero_fecha": p["numeroFecha"],
-                                        "jugado": p["jugado"]
+                                        "fecha": p.get("fecha") or p.get("horario"),
+                                        "numero_fecha": p.get("numeroFecha", p.get("numero_fecha", "")),
+                                        "equipo_local": p.get("nombreLocal", p.get("equipo_local", "")),
+                                        "equipo_visita": p.get("nombreVisitante", p.get("equipo_visita", "")),
+                                        "escudo_local": p.get("escudoLocal", p.get("escudo_local")),
+                                        "escudo_visita": p.get("escudoVisitante", p.get("escudo_visita")),
+                                        "goles_local": p.get("golesLocal", p.get("goles_local")),
+                                        "goles_visita": p.get("golesVisitante", p.get("goles_visita")),
+                                        "jugado": p.get("jugado", False),
+                                        "torneo_nombre": t_ref["nombre"]
                                     }
                                     supabase.table("partidos").upsert(p_data).execute()
 
                                 # Sync Posiciones
                                 for pos in detail.get("tablaGeneral", []):
                                     pos_data = {
+                                        "id": f"{t_id}_{pos.get('clubNombre', '')}",
                                         "torneo_id": t_id,
-                                        "club_nombre": pos["clubNombre"],
-                                        "puesto": pos["puesto"],
-                                        "puntos": pos["puntos"],
-                                        "partidos_jugados": pos.get("partidosJugados", 0),
-                                        "goles_a_favor": pos.get("golesAFavor", 0),
-                                        "goles_en_contra": pos.get("golesEnContra", 0)
+                                        "torneo_nombre": t_ref["nombre"],
+                                        "posicion": pos.get("puesto", 0),
+                                        "equipo": pos.get("clubNombre", ""),
+                                        "escudo": pos.get("escudoUrl"),
+                                        "pj": pos.get("partidosJugados", 0),
+                                        "pg": pos.get("partidosGanados", 0),
+                                        "pe": pos.get("partidosEmpatados", 0),
+                                        "pp": pos.get("partidosPerdidos", 0),
+                                        "gf": pos.get("golesAFavor", 0),
+                                        "gc": pos.get("golesEnContra", 0),
+                                        "puntos": pos.get("puntos", 0),
+                                        "categoria": c_nom,
+                                        "genero": r_text
                                     }
-                                    # Para posiciones usualmente borramos y reinsertamos o usamos una clave compuesta
-                                    supabase.table("posiciones").upsert(pos_data, on_conflict="torneo_id,club_nombre").execute()
+                                    supabase.table("posiciones").upsert(pos_data).execute()
 
                                 # Sync Goleadores
+                                supabase.table("goleadores").delete().eq("torneo_id", t_id).execute()
+                                seen_goleadores = set()
                                 for g in detail.get("goleadores", []):
+                                    jugador_nombre = " ".join(filter(None, [g.get("jug_nombre"), g.get("jug_apellido"), g.get("nombreCompleto"), g.get("jugador_nombre")])).strip()
+                                    club_nombre = g.get("clubNombre", g.get("club_nombre", ""))
+                                    dedupe_key = (jugador_nombre, club_nombre)
+                                    if dedupe_key in seen_goleadores: continue
+                                    seen_goleadores.add(dedupe_key)
                                     g_data = {
                                         "torneo_id": t_id,
-                                        "nombre_completo": g["nombreCompleto"],
-                                        "club_nombre": g["clubNombre"],
-                                        "goles": g["goles"]
+                                        "torneo_nombre": t_ref["nombre"],
+                                        "jugador_nombre": jugador_nombre,
+                                        "club_nombre": club_nombre,
+                                        "foto_url": g.get("jug_foto", g.get("fotoUrl", g.get("foto_url"))),
+                                        "goles": g.get("goles", 0),
+                                        "categoria": c_nom,
+                                        "genero": r_text
                                     }
-                                    supabase.table("goleadores").upsert(g_data, on_conflict="torneo_id,nombre_completo").execute()
+                                    supabase.table("goleadores").insert(g_data).execute()
 
 if __name__ == "__main__":
     try:

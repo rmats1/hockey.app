@@ -3,7 +3,9 @@ package com.example.hockey_app.ui.screens.fixture
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.TorneoResumen
-import com.example.hockey_app.data.services.DataService
+import com.example.hockey_app.domain.catalog.CatalogRepository
+import com.example.hockey_app.domain.competition.CompetitionRepository
+import com.example.hockey_app.data.constants.CompetitionCatalog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ sealed class FixtureState {
 
 @HiltViewModel
 class FixtureViewModel @Inject constructor(
-    private val dataService: DataService
+    private val dataService: CatalogRepository,
+    private val supabaseService: CompetitionRepository
 ) : ViewModel() {
 
     private val _allTorneos = MutableStateFlow<List<TorneoResumen>>(emptyList())
@@ -29,6 +32,8 @@ class FixtureViewModel @Inject constructor(
 
     private val _categoria = MutableStateFlow("Todas")
     val categoria: StateFlow<String> = _categoria
+    private val _categoriasDisponibles = MutableStateFlow(CompetitionCatalog.categories("Damas"))
+    val categoriasDisponibles: StateFlow<List<String>> = _categoriasDisponibles
 
     init {
         loadTorneos()
@@ -39,9 +44,14 @@ class FixtureViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = FixtureState.Loading
             try {
-                val list = dataService.getTorneosResumen()
-                _allTorneos.value = list.filter { it.temporada == "2026" }
-                    .distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
+                // Sincronizar desde Supabase con prioridad a 2026
+                val list = supabaseService.getTorneos()
+                val processedList = if (list.isEmpty()) {
+                    dataService.getTorneosResumen().filter { it.temporada == "2026" }
+                } else {
+                    list.filter { it.temporada == "2026" }
+                }
+                _allTorneos.value = processedList.distinctBy { "${it.nombre}-${it.rama}-${it.categoria}-${it.division}" }
                 applyFilters()
             } catch (e: Exception) {
                 _state.value = FixtureState.Error(e.message ?: "Error al cargar fixtures")
@@ -57,7 +67,11 @@ class FixtureViewModel @Inject constructor(
 
     private fun applyFilters() {
         val filtered = _allTorneos.value.filter { t ->
-            val matchesRama = t.rama == _rama.value
+            val matchesRama = t.rama.contains(_rama.value, ignoreCase = true) ||
+                (t.rama == "Femenino" && _rama.value == "F") ||
+                (t.rama == "Damas" && _rama.value == "F") ||
+                (t.rama == "Masculino" && _rama.value == "M") ||
+                (t.rama == "Caballeros" && _rama.value == "M")
             val matchesCat = _categoria.value == "Todas" || t.categoria.contains(_categoria.value, ignoreCase = true)
             matchesRama && matchesCat
         }
@@ -66,10 +80,17 @@ class FixtureViewModel @Inject constructor(
 
     fun onRamaChange(newRama: String) {
         _rama.value = newRama
+        updateAvailableCategories(newRama)
+        if (_categoria.value != "Todas" && _categoria.value !in _categoriasDisponibles.value) _categoria.value = "Todas"
     }
 
     fun onCategoriaChange(newCat: String) {
         _categoria.value = newCat
+    }
+
+    private fun updateAvailableCategories(branchFilter: String = _rama.value) {
+        val branch = if (branchFilter == "F") "Damas" else "Caballeros"
+        _categoriasDisponibles.value = _allTorneos.value.filter { it.rama.contains(if (branch == "Damas") "Femen" else "Mascul", true) || it.rama == branch }.map { it.categoria }.filter { it.isNotBlank() }.distinct().ifEmpty { CompetitionCatalog.categories(branch) }
     }
 
     fun refresh() {

@@ -9,9 +9,48 @@ plugins {
     alias(libs.plugins.firebase.perf)
 }
 
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
+val debugSupabaseUrl = providers.gradleProperty("SUPABASE_URL")
+    .orElse(providers.environmentVariable("SUPABASE_URL"))
+    .orElse("https://hpvsvsvrdlucuxcdrgbg.supabase.co")
+    .get()
+val debugSupabaseKey = providers.gradleProperty("SUPABASE_KEY")
+    .orElse(providers.environmentVariable("SUPABASE_KEY"))
+    .orElse("sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7")
+    .get()
+val releaseSupabaseUrl = providers.gradleProperty("RELEASE_SUPABASE_URL")
+    .orElse(providers.environmentVariable("RELEASE_SUPABASE_URL"))
+    .orElse("")
+    .get()
+val releaseSupabaseKey = providers.gradleProperty("RELEASE_SUPABASE_KEY")
+    .orElse(providers.environmentVariable("RELEASE_SUPABASE_KEY"))
+    .orElse("")
+    .get()
+
+val verifyReleaseConfig = tasks.register("verifyReleaseConfig") {
+    inputs.property("releaseSupabaseUrl", releaseSupabaseUrl)
+    inputs.property("releaseSupabaseKey", releaseSupabaseKey)
+    doLast {
+        check(inputs.properties["releaseSupabaseUrl"].toString().isNotBlank()) {
+            "RELEASE_SUPABASE_URL must be provided for release builds"
+        }
+        check(inputs.properties["releaseSupabaseKey"].toString().isNotBlank()) {
+            "RELEASE_SUPABASE_KEY must be provided for release builds"
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "preReleaseBuild") {
+        dependsOn(verifyReleaseConfig)
+    }
+}
+
 android {
     namespace = "com.example.hockey_app"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.hockey_app"
@@ -29,18 +68,19 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "SUPABASE_URL", "\"https://hpvsvsvrdlucuxcdrgbg.supabase.co\"")
-            buildConfigField("String", "SUPABASE_KEY", "\"sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7\"")
+            buildConfigField("String", "SUPABASE_URL", buildConfigString(debugSupabaseUrl))
+            buildConfigField("String", "SUPABASE_KEY", buildConfigString(debugSupabaseKey))
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             // Aquí deberías usar variables de entorno en producción
-            buildConfigField("String", "SUPABASE_URL", "\"https://hpvsvsvrdlucuxcdrgbg.supabase.co\"")
-            buildConfigField("String", "SUPABASE_KEY", "\"sb_publishable_8jSWIC_m-NjRTbux2ZoYvA_I8ypilp7\"")
+            buildConfigField("String", "SUPABASE_URL", buildConfigString(releaseSupabaseUrl))
+            buildConfigField("String", "SUPABASE_KEY", buildConfigString(releaseSupabaseKey))
         }
     }
     compileOptions {
@@ -79,12 +119,14 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     // Supabase
     implementation(libs.supabase.postgrest)
     implementation(libs.supabase.auth)
+    implementation(libs.supabase.compose.auth)
     implementation(libs.supabase.storage)
     implementation(libs.supabase.realtime)
     implementation(libs.ktor.client.android)
@@ -104,16 +146,15 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Navigation & UI
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.coil.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.crashlytics)
-
-    // AI
-    implementation(libs.google.generativeai)
 
     // GitHub Skills
     implementation(libs.timber)

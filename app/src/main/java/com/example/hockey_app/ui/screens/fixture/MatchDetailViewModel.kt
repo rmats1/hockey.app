@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.ComentarioModel
 import com.example.hockey_app.data.models.PartidoAHBA
 import com.example.hockey_app.data.models.PrediccionModel
-import com.example.hockey_app.data.services.AuthService
-import com.example.hockey_app.data.services.SupabaseService
+import com.example.hockey_app.domain.auth.AuthRepository
+import com.example.hockey_app.domain.competition.CompetitionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +25,8 @@ sealed class MatchDetailState {
 
 @HiltViewModel
 class MatchDetailViewModel @Inject constructor(
-    private val supabaseService: SupabaseService,
-    private val authService: AuthService
+    private val supabaseService: CompetitionRepository,
+    private val authService: AuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<MatchDetailState>(MatchDetailState.Loading)

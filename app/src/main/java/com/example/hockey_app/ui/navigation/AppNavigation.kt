@@ -1,232 +1,164 @@
 package com.example.hockey_app.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.hockey_app.ui.screens.home.HomeScreen
-import com.example.hockey_app.ui.screens.login.LoginScreen
-import com.example.hockey_app.ui.screens.onboarding.OnboardingScreen
-import com.example.hockey_app.ui.screens.register.RegisterScreen
-import com.example.hockey_app.ui.screens.splash.SplashScreen
-import com.example.hockey_app.ui.screens.torneos.TorneoDetalleMode
-import com.example.hockey_app.ui.screens.torneos.TorneoDetalleScreen
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
+import com.example.hockey_app.data.models.NewsModel
 import com.example.hockey_app.data.models.TorneoResumen
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.hockey_app.ui.screens.club.CompareClubsScreen
 import com.example.hockey_app.ui.screens.club.FavoriteClubsScreen
-import com.example.hockey_app.ui.screens.tactical.TacticalBoardScreen
-import com.example.hockey_app.ui.screens.news.NewsDetailScreen
-import com.example.hockey_app.data.models.NewsModel
-import com.example.hockey_app.ui.screens.fixture.MatchDetailScreen
-import com.example.hockey_app.ui.screens.coach.PhysicalPlanningScreen
 import com.example.hockey_app.ui.screens.coach.CallUpManagementScreen
+import com.example.hockey_app.ui.screens.coach.PhysicalPlanningScreen
+import com.example.hockey_app.ui.screens.fixture.CalendarScreen
+import com.example.hockey_app.ui.screens.fixture.CommentsScreen
+import com.example.hockey_app.ui.screens.fixture.MatchDetailScreen
+import com.example.hockey_app.ui.screens.fixture.PredictionsScreen
+import com.example.hockey_app.ui.screens.home.HomeScreen
+import com.example.hockey_app.ui.screens.login.LoginScreen
+import com.example.hockey_app.ui.screens.news.NewsDetailScreen
+import com.example.hockey_app.ui.screens.onboarding.OnboardingScreen
+import com.example.hockey_app.ui.screens.profile.AyudaScreen
+import com.example.hockey_app.ui.screens.profile.ProfileScreen
+import com.example.hockey_app.ui.screens.profile.SettingsScreen
+import com.example.hockey_app.ui.screens.profile.ShareAppScreen
+import com.example.hockey_app.ui.screens.register.RegisterScreen
+import com.example.hockey_app.ui.screens.splash.SplashScreen
+import com.example.hockey_app.ui.screens.tactical.TacticalBoardScreen
+import com.example.hockey_app.ui.screens.team.SearchPlayersScreen
+import com.example.hockey_app.ui.screens.torneos.ChartsScreen
+import com.example.hockey_app.ui.screens.torneos.EstadisticasScreen
+import com.example.hockey_app.ui.screens.torneos.TorneoDetalleMode
+import com.example.hockey_app.ui.screens.torneos.TorneoDetalleScreen
+import kotlinx.serialization.Serializable
 
-sealed class Screen(val route: String) {
-    object Splash : Screen("splash")
-    object Login : Screen("login")
-    object Home : Screen("home")
-    object Register : Screen("register")
-    object Onboarding : Screen("onboarding")
-    object TacticalBoard : Screen("tactical_board?clubEscudo={clubEscudo}") {
-        fun createRoute(clubEscudo: String?) = "tactical_board?clubEscudo=${if (clubEscudo.isNullOrEmpty()) "none" else clubEscudo}"
-    }
-    object Settings : Screen("settings")
-    object CompareClubs : Screen("compare_clubs")
-    object FavoriteClubs : Screen("favorite_clubs")
-    object SearchPlayers : Screen("search_players")
-    object NewsDetail : Screen("news_detail")
-    object PhysicalPlanning : Screen("physical_planning")
-    object MatchDetail : Screen("match_detail/{matchId}") {
-        fun createRoute(matchId: String) = "match_detail/$matchId"
-    }
-    object CallUpManagement : Screen("call_up_management")
-    object TorneoDetalle : Screen("torneo_detalle/{id}/{nombre}/{rama}/{categoria}/{division}/{temporada}/{mode}") {
-        fun createRoute(t: TorneoResumen, mode: TorneoDetalleMode) = 
-            "torneo_detalle/${t.id}/${t.nombre}/${t.rama}/${t.categoria}/${if(t.division.isEmpty()) "none" else t.division}/${t.temporada}/${mode.name}"
-    }
+@Serializable
+sealed interface AppRoute : NavKey {
+    @Serializable data object Splash : AppRoute
+    @Serializable data object Login : AppRoute
+    @Serializable data object Home : AppRoute
+    @Serializable data object Register : AppRoute
+    @Serializable data object Onboarding : AppRoute
+    @Serializable data object Settings : AppRoute
+    @Serializable data object CompareClubs : AppRoute
+    @Serializable data object FavoriteClubs : AppRoute
+    @Serializable data object SearchPlayers : AppRoute
+    @Serializable data object PhysicalPlanning : AppRoute
+    @Serializable data object CallUpManagement : AppRoute
+    @Serializable data object Ayuda : AppRoute
+    @Serializable data object ShareApp : AppRoute
+    @Serializable data object Estadisticas : AppRoute
+    @Serializable data object Charts : AppRoute
+    @Serializable data object Predictions : AppRoute
+    @Serializable data object Calendar : AppRoute
+
+    @Serializable
+    data class TacticalBoard(val clubEscudo: String? = null) : AppRoute
+
+    @Serializable
+    data class MatchDetail(val matchId: String) : AppRoute
+
+    @Serializable
+    data class Comments(val partidoId: String, val titulo: String) : AppRoute
+
+    @Serializable
+    data class TorneoDetalle(val torneo: TorneoResumen, val mode: TorneoDetalleMode) : AppRoute
+
+    @Serializable
+    data class NewsDetail(val news: NewsModel) : AppRoute
+}
+
+private fun MutableList<AppRoute>.replaceWith(route: AppRoute) {
+    clear()
+    add(route)
+}
+
+private fun MutableList<AppRoute>.pop() {
+    if (size > 1) removeAt(lastIndex)
 }
 
 @Composable
 fun AppNavigation() {
-    val navController = rememberNavController()
+    val backStack = remember { mutableStateListOf<AppRoute>(AppRoute.Splash) }
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Splash.route
-    ) {
-        composable(Screen.Splash.route) {
-            SplashScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                },
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                    }
-                }
-            )
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.pop() },
+        entryProvider = { route ->
+            NavEntry(route) { RouteContent(route, backStack) }
         }
-        composable(Screen.Login.route) {
-            LoginScreen(
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Register.route)
-                }
+    )
+}
+
+@Composable
+private fun RouteContent(route: AppRoute, backStack: MutableList<AppRoute>) {
+        when (route) {
+            AppRoute.Splash -> SplashScreen(
+                onNavigateToLogin = { backStack.replaceWith(AppRoute.Login) },
+                onNavigateToHome = { backStack.replaceWith(AppRoute.Home) }
             )
-        }
-        composable(Screen.Register.route) {
-            RegisterScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToHome = {
-                    navController.navigate(Screen.Onboarding.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                }
+
+            AppRoute.Login -> LoginScreen(
+                onNavigateToHome = { backStack.replaceWith(AppRoute.Home) },
+                onNavigateToRegister = { backStack.add(AppRoute.Register) }
             )
-        }
-        composable(Screen.Home.route) {
-            HomeScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
+
+            AppRoute.Register -> RegisterScreen(
+                onNavigateBack = { backStack.pop() },
+                onNavigateToHome = { backStack.replaceWith(AppRoute.Onboarding) }
+            )
+
+            AppRoute.Onboarding -> OnboardingScreen(
+                onSkip = { backStack.replaceWith(AppRoute.Home) },
+                onFinish = { backStack.replaceWith(AppRoute.Home) }
+            )
+
+            AppRoute.Home -> HomeScreen(
+                onNavigateToLogin = { backStack.replaceWith(AppRoute.Login) },
                 onNavigateToTorneoDetalle = { torneo, mode ->
-                    navController.navigate(Screen.TorneoDetalle.createRoute(torneo, mode))
+                    backStack.add(AppRoute.TorneoDetalle(torneo, mode))
                 },
-                onNavigateToTacticalBoard = { escudo ->
-                    navController.navigate(Screen.TacticalBoard.createRoute(escudo))
-                },
-                onNavigateToCompareClubs = {
-                    navController.navigate(Screen.CompareClubs.route)
-                },
-                onNavigateToFavoriteClubs = {
-                    navController.navigate(Screen.FavoriteClubs.route)
-                },
-                onNavigateToSearchPlayers = {
-                    navController.navigate(Screen.SearchPlayers.route)
-                },
-                onNavigateToCallUpManagement = {
-                    navController.navigate(Screen.CallUpManagement.route)
-                },
-                onNavigateToPhysicalPlanning = {
-                    navController.navigate(Screen.PhysicalPlanning.route)
-                },
-                onNavigateToSettings = {
-                    navController.navigate(Screen.Settings.route)
-                },
-                onNavigateToNewsDetail = { news ->
-                    navController.currentBackStackEntry?.savedStateHandle?.set("news", news)
-                    navController.navigate(Screen.NewsDetail.route)
-                }
+                onNavigateToTacticalBoard = { escudo -> backStack.add(AppRoute.TacticalBoard(escudo)) },
+                onNavigateToCompareClubs = { backStack.add(AppRoute.CompareClubs) },
+                onNavigateToFavoriteClubs = { backStack.add(AppRoute.FavoriteClubs) },
+                onNavigateToSearchPlayers = { backStack.add(AppRoute.SearchPlayers) },
+                onNavigateToCallUpManagement = { backStack.add(AppRoute.CallUpManagement) },
+                onNavigateToPhysicalPlanning = { backStack.add(AppRoute.PhysicalPlanning) },
+                onNavigateToSettings = { backStack.add(AppRoute.Settings) },
+                onNavigateToNewsDetail = { news -> backStack.add(AppRoute.NewsDetail(news)) }
             )
-        }
-        composable(
-            route = Screen.TorneoDetalle.route,
-            arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
-                navArgument("nombre") { type = NavType.StringType },
-                navArgument("rama") { type = NavType.StringType },
-                navArgument("categoria") { type = NavType.StringType },
-                navArgument("division") { type = NavType.StringType },
-                navArgument("temporada") { type = NavType.StringType },
-                navArgument("mode") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id") ?: ""
-            val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
-            val rama = backStackEntry.arguments?.getString("rama") ?: ""
-            val categoria = backStackEntry.arguments?.getString("categoria") ?: ""
-            val division = backStackEntry.arguments?.getString("division").let { if (it == "none") "" else it } ?: ""
-            val temporada = backStackEntry.arguments?.getString("temporada") ?: ""
-            val mode = TorneoDetalleMode.valueOf(backStackEntry.arguments?.getString("mode") ?: "FIXTURE")
 
-            TorneoDetalleScreen(
-                torneo = TorneoResumen(id, nombre, rama, categoria, division, temporada),
-                initialMode = mode,
-                onBack = { navController.popBackStack() },
-                onMatchClick = { matchId ->
-                    navController.navigate(Screen.MatchDetail.createRoute(matchId))
-                }
+            is AppRoute.TorneoDetalle -> TorneoDetalleScreen(
+                torneo = route.torneo,
+                initialMode = route.mode,
+                onBack = { backStack.pop() },
+                onMatchClick = { matchId -> backStack.add(AppRoute.MatchDetail(matchId)) }
+            )
+
+            AppRoute.Settings -> SettingsScreen(onBack = { backStack.pop() })
+            AppRoute.FavoriteClubs -> FavoriteClubsScreen(onBack = { backStack.pop() })
+            AppRoute.SearchPlayers -> SearchPlayersScreen(onBack = { backStack.pop() })
+            is AppRoute.TacticalBoard -> TacticalBoardScreen(
+                onBack = { backStack.pop() },
+                clubEscudo = route.clubEscudo
+            )
+            AppRoute.CompareClubs -> CompareClubsScreen(onBack = { backStack.pop() })
+            is AppRoute.NewsDetail -> NewsDetailScreen(news = route.news, onBack = { backStack.pop() })
+            is AppRoute.MatchDetail -> MatchDetailScreen(matchId = route.matchId, onBack = { backStack.pop() })
+            AppRoute.CallUpManagement -> CallUpManagementScreen(onBack = { backStack.pop() })
+            AppRoute.PhysicalPlanning -> PhysicalPlanningScreen(onBack = { backStack.pop() })
+            AppRoute.Ayuda -> AyudaScreen(onBack = { backStack.pop() })
+            AppRoute.ShareApp -> ShareAppScreen(onBack = { backStack.pop() })
+            AppRoute.Estadisticas -> EstadisticasScreen(onBack = { backStack.pop() })
+            AppRoute.Charts -> ChartsScreen(onBack = { backStack.pop() })
+            AppRoute.Predictions -> PredictionsScreen(onBack = { backStack.pop() })
+            AppRoute.Calendar -> CalendarScreen(onBack = { backStack.pop() })
+            is AppRoute.Comments -> CommentsScreen(
+                partidoId = route.partidoId,
+                titulo = route.titulo,
+                onBack = { backStack.pop() }
             )
         }
-        composable(Screen.Onboarding.route) {
-            OnboardingScreen(
-                onSkip = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Onboarding.route) { inclusive = true }
-                    }
-                },
-                onFinish = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Onboarding.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-        composable(Screen.Settings.route) {
-            com.example.hockey_app.ui.screens.profile.SettingsScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.FavoriteClubs.route) {
-            FavoriteClubsScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.SearchPlayers.route) {
-            com.example.hockey_app.ui.screens.team.SearchPlayersScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(
-            route = Screen.TacticalBoard.route,
-            arguments = listOf(navArgument("clubEscudo") { defaultValue = "none" })
-        ) { backStackEntry ->
-            val escudo = backStackEntry.arguments?.getString("clubEscudo").let { if (it == "none") null else it }
-            TacticalBoardScreen(
-                onBack = { navController.popBackStack() },
-                clubEscudo = escudo
-            )
-        }
-        composable(Screen.CompareClubs.route) {
-            CompareClubsScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.NewsDetail.route) {
-            val news = navController.previousBackStackEntry?.savedStateHandle?.get<NewsModel>("news")
-            if (news != null) {
-                NewsDetailScreen(
-                    news = news,
-                    onBack = { navController.popBackStack() }
-                )
-            }
-        }
-        composable(Screen.MatchDetail.route) { backStackEntry ->
-            val matchId = backStackEntry.arguments?.getString("matchId") ?: ""
-            MatchDetailScreen(
-                matchId = matchId,
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.CallUpManagement.route) {
-            CallUpManagementScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.PhysicalPlanning.route) {
-            PhysicalPlanningScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-    }
 }

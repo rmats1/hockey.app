@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.CallUpModel
 import com.example.hockey_app.data.models.TrainingPlanModel
 import com.example.hockey_app.data.models.UserModel
-import com.example.hockey_app.data.services.AuthService
-import com.example.hockey_app.data.services.SupabaseService
+import com.example.hockey_app.domain.auth.AuthRepository
+import com.example.hockey_app.domain.competition.CompetitionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
-    private val authService: AuthService,
-    private val supabaseService: SupabaseService
+    private val authService: AuthRepository,
+    private val supabaseService: CompetitionRepository
 ) : ViewModel() {
 
     private val _user = MutableStateFlow<UserModel?>(null)

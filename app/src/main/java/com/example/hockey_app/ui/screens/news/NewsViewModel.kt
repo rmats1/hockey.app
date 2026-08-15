@@ -3,7 +3,7 @@ package com.example.hockey_app.ui.screens.news
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hockey_app.data.models.NewsModel
-import com.example.hockey_app.data.services.SupabaseService
+import com.example.hockey_app.domain.competition.CompetitionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ sealed class NewsState {
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    private val supabaseService: SupabaseService
+    private val supabaseService: CompetitionRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<NewsState>(NewsState.Loading)
