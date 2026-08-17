@@ -12,6 +12,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.IDToken
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.storage.Storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -27,23 +28,23 @@ import javax.inject.Singleton
 class SupabaseAuthRepository @Inject constructor(
     private val auth: Auth,
     private val postgrest: Postgrest,
+    private val storage: Storage,
     @param:ApplicationContext private val context: Context,
 ) : AuthRepository {
-    private val prefs = context.getSharedPreferences("hockey_auth_refactored", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("hockey_auth", Context.MODE_PRIVATE)
     private val json = Json { ignoreUnknownKeys = true }
     private val serviceScope = CoroutineScope(Dispatchers.IO)
 
-    private val _sessionStatus = auth.sessionStatus
+    override val sessionStatus = auth.sessionStatus
         .stateIn(serviceScope, SharingStarted.Eagerly, SessionStatus.Initializing)
 
-    override val isUserLoggedIn: StateFlow<Boolean> = _sessionStatus
+    override val isUserLoggedIn: StateFlow<Boolean> = sessionStatus
         .map { it is SessionStatus.Authenticated }
         .stateIn(serviceScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         serviceScope.launch {
             auth.sessionStatus.collect { status ->
-                Timber.d("AuthRepository Status: $status")
                 if (status is SessionStatus.Authenticated) {
                     getCurrentUser()?.let { saveUserLocally(it) }
                 }
@@ -53,12 +54,15 @@ class SupabaseAuthRepository @Inject constructor(
 
     override suspend fun signInWithEmail(email: String, pass: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            Timber.d("Repository: Attempting login for $email")
             auth.signInWith(Email) {
                 this.email = email
                 this.password = pass
             }
+            Timber.d("Repository: Login successful. Session: ${auth.currentSessionOrNull() != null}")
             Result.success(Unit)
         } catch (e: Exception) {
+            Timber.e(e, "Repository: Login failed")
             Result.failure(e)
         }
     }
@@ -71,8 +75,24 @@ class SupabaseAuthRepository @Inject constructor(
             }
             val userId = response?.id ?: throw Exception("ID de usuario nulo")
             val completeUser = userMetadata.copy(id = userId)
-            postgrest.from("profiles").insert(completeUser)
+            
+            if (auth.currentSessionOrNull() != null) {
+                try {
+                    postgrest.from("profiles").insert(completeUser)
+                } catch (e: Exception) {
+                    Timber.w("Perfil se sincronizará en el próximo login")
+                }
+            }
             saveUserLocally(completeUser)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun signInWithGoogle(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            auth.signInWith(Google, redirectUrl = "hockeyapp://login-callback")
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -114,7 +134,6 @@ class SupabaseAuthRepository @Inject constructor(
                 .decodeSingleOrNull<UserModel>()
 
             if (profile == null) {
-                // Lógica de creación inicial si no existe (clonada de AuthService por seguridad)
                 val user = session.user ?: return@withContext null
                 val googleName = user.userMetadata?.get("full_name")?.toString()?.trim('"') ?: "Usuario"
                 val googlePhoto = user.userMetadata?.get("avatar_url")?.toString()?.trim('"')
@@ -132,7 +151,6 @@ class SupabaseAuthRepository @Inject constructor(
             saveUserLocally(profile)
             profile
         } catch (e: Exception) {
-            Timber.e(e, "Error en getCurrentUser Repository")
             getLocalUser()
         }
     }
@@ -149,13 +167,25 @@ class SupabaseAuthRepository @Inject constructor(
         }
     }
 
+    override suspend fun uploadProfilePhoto(jpegBytes: ByteArray): Result<String> = withContext(Dispatchers.IO) {
+        try {
+            val userId = auth.currentSessionOrNull()?.user?.id ?: throw Exception("Sin sesión")
+            val path = "$userId/profile.jpg"
+            storage.from("avatars").upload(path, jpegBytes) { upsert = true }
+            val publicUrl = storage.from("avatars").publicUrl(path)
+            Result.success(publicUrl)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     private fun saveUserLocally(user: UserModel) {
         prefs.edit(commit = true) {
             putString("last_logged_user", json.encodeToString(user))
         }
     }
 
-    private fun getLocalUser(): UserModel? {
+    override fun getLocalUser(): UserModel? {
         val data = prefs.getString("last_logged_user", null) ?: return null
         return try { json.decodeFromString<UserModel>(data) } catch (_: Exception) { null }
     }

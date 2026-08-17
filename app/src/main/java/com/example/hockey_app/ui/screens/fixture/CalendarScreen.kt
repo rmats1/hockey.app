@@ -23,6 +23,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -252,58 +254,71 @@ fun CalendarScreen(
 
 @Composable
 private fun MatchCardItem(p: PartidoAHBA) {
+    val accentColor = MaterialTheme.colorScheme.primary
+
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(1.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(4.dp, RoundedCornerShape(20.dp), ambientColor = accentColor.copy(alpha = 0.1f))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(14.dp),
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Box(modifier = Modifier.fillMaxHeight().width(6.dp).background(accentColor))
+            
+            Row(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.SportsHockey, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(p.nombreLocal, fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1f))
-                    Text(" VS ", fontWeight = FontWeight.Black, fontSize = 10.sp, color = MaterialTheme.colorScheme.secondary)
-                    Text(p.nombreVisitante, fontWeight = FontWeight.Bold, fontSize = 13.sp, modifier = Modifier.weight(1f), textAlign = TextAlign.End)
-                }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(p.horario ?: "16:00", fontSize = 11.sp, color = Color.Gray)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Cancha Principal", fontSize = 11.sp, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-            }
-            if (p.golesLocal != null && p.golesVisitante != null) {
-                Spacer(modifier = Modifier.width(8.dp))
-                Surface(
-                    color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(8.dp)
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(accentColor.copy(alpha = 0.08f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "${p.golesLocal} - ${p.golesVisitante}",
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
-                    )
+                    Icon(Icons.Default.SportsHockey, contentDescription = null, tint = accentColor, modifier = Modifier.size(22.dp))
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(p.nombreLocal.uppercase(), fontWeight = FontWeight.Black, fontSize = 12.sp, modifier = Modifier.weight(1f), letterSpacing = 0.5.sp)
+                        Text(" VS ", fontWeight = FontWeight.ExtraBold, fontSize = 9.sp, color = MaterialTheme.colorScheme.secondary)
+                        Text(p.nombreVisitante.uppercase(), fontWeight = FontWeight.Black, fontSize = 12.sp, modifier = Modifier.weight(1f), textAlign = TextAlign.End, letterSpacing = 0.5.sp)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(p.fechaHora ?: "16:00", fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(12.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("CANCHA PRINCIPAL", fontSize = 9.sp, color = Color.Gray, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                }
+                if (p.golesLocal != null && p.golesVisitante != null) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Surface(
+                        color = Color(0xFFF1F3F4),
+                        shape = RoundedCornerShape(10.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEEEEEE))
+                    ) {
+                        Text(
+                            "${p.golesLocal} - ${p.golesVisitante}",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            color = Color.Black,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }

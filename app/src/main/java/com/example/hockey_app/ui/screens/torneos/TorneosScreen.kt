@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -188,39 +190,88 @@ fun RamaChip(label: String, isSelected: Boolean, onSelectedChange: (Boolean) -> 
 
 @Composable
 fun TorneoCard(torneo: TorneoResumen, onClick: () -> Unit) {
+    val accentColor = if (torneo.rama.contains("Fem", ignoreCase = true) || torneo.rama.contains("Dama", ignoreCase = true)) {
+        Color(0xFFFF4081)
+    } else {
+        Color(0xFF2979FF)
+    }
+
     Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(0.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(20.dp),
+                ambientColor = accentColor.copy(alpha = 0.2f),
+                spotColor = accentColor.copy(alpha = 0.4f)
+            ),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(torneo.nombre, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
-                        shape = RoundedCornerShape(6.dp)
-                    ) {
+            // Barra lateral de color identificadora
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(8.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(accentColor, accentColor.copy(alpha = 0.6f))
+                        )
+                    )
+            )
+            
+            Row(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = torneo.nombre.uppercase(), 
+                        fontWeight = FontWeight.Black,
+                        fontSize = 15.sp,
+                        letterSpacing = 0.5.sp,
+                        color = Color(0xFF1A1A1A)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Badge con estilo "Sport"
+                        Surface(
+                            color = accentColor.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        ) {
+                            Text(
+                                text = if (torneo.rama.contains("Fem", true)) "FEMENINO" else "MASCULINO",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 3.dp),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = accentColor
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            torneo.categoria,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary
+                            text = "${torneo.categoria}${if (torneo.division.isNotEmpty()) " • DIVISIÓN ${torneo.division}" else ""}", 
+                            fontSize = 11.sp, 
+                            color = Color.Gray, 
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                    if (torneo.division.isNotEmpty()) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("• División ${torneo.division}", fontSize = 11.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
-                    }
                 }
+                Icon(
+                    imageVector = Icons.Default.ChevronRight, 
+                    contentDescription = null, 
+                    tint = Color(0xFFD1D1D1), 
+                    modifier = Modifier.size(16.dp)
+                )
             }
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(16.dp))
         }
     }
 }

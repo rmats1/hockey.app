@@ -5,16 +5,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ImageNotSupported
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
@@ -114,72 +116,99 @@ fun NewsScreen(
 
 @Composable
 fun NewsCard(news: NewsModel, onClick: () -> Unit) {
+    val accentColor = MaterialTheme.colorScheme.primary
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(2.dp),
+            .clickable(onClick = onClick)
+            .shadow(6.dp, RoundedCornerShape(20.dp), ambientColor = accentColor.copy(alpha = 0.1f)),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
-            if (!news.imagen_url.isNullOrEmpty()) {
-                AsyncImage(
-                    model = news.imagen_url,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .background(Color(0xFFEEEEEE)),
-                    contentAlignment = Alignment.Center
+            Box {
+                if (!news.imagen_url.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = news.imagen_url,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    // Gradient Overlay for better text separation
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.4f)),
+                                    startY = 100f
+                                )
+                            )
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(Color(0xFFF8F9FA)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Default.ImageNotSupported, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(32.dp))
+                    }
+                }
+                
+                // Source Badge on image
+                Surface(
+                    modifier = Modifier.padding(16.dp).align(Alignment.TopStart),
+                    color = accentColor,
+                    shape = CircleShape,
+                    shadowElevation = 4.dp
                 ) {
-                    Icon(Icons.Default.ImageNotSupported, contentDescription = null, tint = Color.LightGray)
+                    Text(
+                        (news.fuente ?: "AHBA").uppercase(),
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        letterSpacing = 1.sp
+                    )
                 }
             }
 
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        contentColor = MaterialTheme.colorScheme.primary
-                    ) {
-                        Text(
-                            (news.fuente ?: "NOTICIAS").uppercase(),
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            fontSize = 9.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(12.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = formatDate(news.fecha_publicacion),
                         fontSize = 10.sp,
-                        color = Color.Gray
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = news.titulo ?: "",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 17.sp,
+                    color = Color(0xFF1A1A1A),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 22.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = news.resumen ?: "",
-                    fontSize = 12.sp,
-                    color = Color.Gray,
+                    fontSize = 13.sp,
+                    color = Color(0xFF666666),
                     maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 18.sp
                 )
             }
         }

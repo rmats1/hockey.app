@@ -1,6 +1,7 @@
 package com.example.hockey_app.ui.screens.fixture
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -102,48 +105,73 @@ fun MatchDetailScreen(
 @Composable
 fun MatchScoreboard(partido: PartidoAHBA) {
     Surface(
+        modifier = Modifier.shadow(12.dp),
         color = MaterialTheme.colorScheme.primary,
-        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-        shadowElevation = 8.dp
+        shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(MaterialTheme.colorScheme.primary, Color(0xFF0F2B48))
+                    )
+                )
         ) {
-            Text(
-                "FECHA ${partido.numeroFecha} • ${partido.horario ?: "A confirmar"}",
-                color = Color.White.copy(alpha = 0.7f),
-                fontWeight = FontWeight.Bold,
-                fontSize = 11.sp
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TeamInfo(partido.nombreLocal, partido.escudoLocal, Modifier.weight(1f))
-                
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val score = if (partido.jugado) "${partido.golesLocal} - ${partido.golesVisitante}" else "VS"
-                    Text(score, color = Color.White, fontWeight = FontWeight.Black, fontSize = 36.sp)
-                    if (partido.jugado) {
-                        Surface(
-                            color = Color.White.copy(alpha = 0.2f),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                "FINALIZADO",
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                color = Color.White,
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Black
-                            )
-                        }
-                    }
+                Surface(
+                    color = Color.White.copy(alpha = 0.15f),
+                    shape = CircleShape
+                ) {
+                    Text(
+                        "FECHA ${partido.numeroFecha} • ${partido.fechaHora ?: "A CONFIRMAR"}",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 10.sp,
+                        letterSpacing = 1.sp
+                    )
                 }
                 
-                TeamInfo(partido.nombreVisitante, partido.escudoVisitante, Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TeamInfo(partido.nombreLocal, partido.escudoLocal, Modifier.weight(1f))
+                    
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 16.dp)) {
+                        val score = if (partido.jugado) "${partido.golesLocal} - ${partido.golesVisitante}" else "VS"
+                        Text(
+                            text = score, 
+                            color = Color.White, 
+                            fontWeight = FontWeight.Black, 
+                            fontSize = 42.sp,
+                            letterSpacing = (-1).sp
+                        )
+                        if (partido.jugado) {
+                            Surface(
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = RoundedCornerShape(6.dp)
+                            ) {
+                                Text(
+                                    "FINALIZADO",
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                                    color = Color.White,
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Black
+                                )
+                            }
+                        }
+                    }
+                    
+                    TeamInfo(partido.nombreVisitante, partido.escudoVisitante, Modifier.weight(1f))
+                }
             }
         }
     }
@@ -157,29 +185,31 @@ fun PredictionSection(partido: PartidoAHBA, onPredict: (Int, Int) -> Unit) {
     var visitGoles by remember { mutableStateOf("0") }
 
     Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(6.dp, RoundedCornerShape(24.dp), ambientColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("PRODE: ¿QUIÉN GANA?", fontWeight = FontWeight.Black, fontSize = 12.sp, letterSpacing = 0.5.sp)
+                Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.width(10.dp))
+                Text("PRODE: ¿QUIÉN GANA?", fontWeight = FontWeight.Black, fontSize = 13.sp, letterSpacing = 0.5.sp)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 PredictionInput(localGoles) { localGoles = it }
-                Text("-", modifier = Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Black, fontSize = 20.sp)
+                Text("—", modifier = Modifier.padding(horizontal = 24.dp), fontWeight = FontWeight.Black, fontSize = 24.sp, color = Color.LightGray)
                 PredictionInput(visitGoles) { visitGoles = it }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { onPredict(localGoles.toIntOrNull() ?: 0, visitGoles.toIntOrNull() ?: 0) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                shape = RoundedCornerShape(15.dp)
             ) {
-                Text("ENVIAR PREDICCIÓN", fontWeight = FontWeight.Bold)
+                Text("ENVIAR PREDICCIÓN", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
             }
         }
     }
@@ -199,30 +229,39 @@ fun PredictionInput(value: String, onValueChange: (String) -> Unit) {
 
 @Composable
 fun CommentItem(comentario: ComentarioModel) {
+    val accentColor = MaterialTheme.colorScheme.primary
+
     Row(modifier = Modifier.fillMaxWidth()) {
         Box(
-            modifier = Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+            modifier = Modifier
+                .size(44.dp)
+                .shadow(4.dp, CircleShape)
+                .background(Color.White, CircleShape)
+                .border(2.dp, accentColor.copy(alpha = 0.1f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Text(comentario.user_name.take(1).uppercase(), fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+            Text(comentario.user_name.take(1).uppercase(), fontWeight = FontWeight.Black, color = accentColor, fontSize = 18.sp)
         }
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(14.dp))
         Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(comentario.user_name, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(comentario.user_name.uppercase(), fontWeight = FontWeight.Black, fontSize = 11.sp, color = Color.DarkGray, letterSpacing = 0.5.sp)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("hace poco", fontSize = 10.sp, color = Color.Gray)
+                Text("HACE POCO", fontSize = 9.sp, color = Color.LightGray, fontWeight = FontWeight.Bold)
             }
+            Spacer(modifier = Modifier.height(6.dp))
             Surface(
                 color = Color.White,
-                shape = RoundedCornerShape(topStart = 0.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp),
-                shadowElevation = 1.dp
+                shape = RoundedCornerShape(topStart = 0.dp, topEnd = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp),
+                shadowElevation = 3.dp,
+                tonalElevation = 2.dp
             ) {
                 Text(
                     text = comentario.texto,
-                    modifier = Modifier.padding(12.dp),
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp
+                    modifier = Modifier.padding(14.dp),
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = Color(0xFF333333)
                 )
             }
         }
@@ -234,27 +273,32 @@ fun CommentInput(text: String, onTextChange: (String) -> Unit, onSend: () -> Uni
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = Color.White,
-        shadowElevation = 16.dp
+        shadowElevation = 24.dp
     ) {
         Row(
-            modifier = Modifier.padding(12.dp).navigationBarsPadding().imePadding(),
+            modifier = Modifier.padding(16.dp).navigationBarsPadding().imePadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextField(
+            OutlinedTextField(
                 value = text,
                 onValueChange = onTextChange,
-                placeholder = { Text("Escribir un comentario...", fontSize = 14.sp) },
+                placeholder = { Text("Escribir un comentario...", fontSize = 14.sp, color = Color.LightGray) },
                 modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                shape = RoundedCornerShape(24.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF8F9FA),
+                    unfocusedContainerColor = Color(0xFFF8F9FA),
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent
                 ),
-                maxLines = 3
+                maxLines = 4
             )
-            IconButton(onClick = onSend) {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.width(12.dp))
+            IconButton(
+                onClick = onSend,
+                modifier = Modifier.background(MaterialTheme.colorScheme.primary, CircleShape).size(48.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = Color.White, modifier = Modifier.size(20.dp))
             }
         }
     }

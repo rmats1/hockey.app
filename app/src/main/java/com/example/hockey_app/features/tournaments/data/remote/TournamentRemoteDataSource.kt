@@ -131,4 +131,17 @@ class TournamentRemoteDataSource @Inject constructor(
             emptyList()
         }
     }
+
+    suspend fun getPartido(partidoId: String): PartidoAHBA? = withContext(Dispatchers.IO) {
+        try {
+            postgrest.from("partidos")
+                .select() {
+                    filter { eq("id", partidoId) }
+                }
+                .decodeSingleOrNull<PartidoAHBA>()
+        } catch (e: Exception) {
+            Timber.e(e, "Error fetching partido $partidoId")
+            null
+        }
+    }
 }

@@ -19,6 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -79,23 +81,26 @@ fun OnboardingScreen(
                 .verticalScroll(scrollState)
                 .padding(horizontal = 30.dp)
         ) {
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "¡HOLA!",
-                fontSize = 32.sp,
+                text = "¡BIENVENIDO/A!",
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.primary,
                 letterSpacing = (-1).sp
             )
             Text(
-                text = "Personalizá tu experiencia. Podés completar esto ahora o hacerlo más tarde desde tu perfil.",
-                fontSize = 14.sp,
-                color = Color.Gray
+                text = "Personalizá tu experiencia en Hockey Plus.",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Gray,
+                letterSpacing = 0.5.sp
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             SectionHeader("¿CUÁL ES TU ROL?")
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             val userType by viewModel.userType.collectAsStateWithLifecycle()
             Row {
@@ -106,7 +111,7 @@ fun OnboardingScreen(
                     modifier = Modifier.weight(1f),
                     onSelect = { viewModel.userType.value = "jugador" }
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(14.dp))
                 SelectionButton(
                     label = "C. TÉCNICO",
                     icon = Icons.Default.Groups,
@@ -116,7 +121,7 @@ fun OnboardingScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             val rama by viewModel.rama.collectAsStateWithLifecycle()
             Row {
@@ -126,7 +131,7 @@ fun OnboardingScreen(
                     modifier = Modifier.weight(1f),
                     onSelect = { viewModel.rama.value = "Damas" }
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 SmallSelectButton(
                     label = "CABALLEROS",
                     isSelected = rama == "Caballeros",
@@ -135,13 +140,13 @@ fun OnboardingScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-            SectionHeader("INFORMACIÓN DEL CLUB")
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(36.dp))
+            SectionHeader("TU CLUB Y CATEGORÍA")
+            Spacer(modifier = Modifier.height(18.dp))
 
             OnboardingClubSearchField(viewModel)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(26.dp))
             val categoria by viewModel.categoria.collectAsStateWithLifecycle()
             DropdownField(
                 label = "Categoría",
@@ -151,11 +156,11 @@ fun OnboardingScreen(
                 onItemSelected = { viewModel.categoria.value = it }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
             OnboardingDivisionSelector(viewModel)
 
             if (userType == "jugador") {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(26.dp))
                 val numeroCamiseta by viewModel.numeroCamiseta.collectAsStateWithLifecycle()
                 ModernTextField(
                     value = numeroCamiseta,
@@ -164,7 +169,7 @@ fun OnboardingScreen(
                     icon = Icons.Default.Numbers,
                     keyboardType = KeyboardType.Number
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(18.dp))
                 val posicion by viewModel.posicion.collectAsStateWithLifecycle()
                 DropdownField(
                     label = "Posición",
@@ -174,7 +179,7 @@ fun OnboardingScreen(
                     onItemSelected = { viewModel.posicion.value = it }
                 )
             } else {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(26.dp))
                 val rol by viewModel.rolCuerpoTecnico.collectAsStateWithLifecycle()
                 DropdownField(
                     label = "Rol en el equipo",
@@ -191,14 +196,15 @@ fun OnboardingScreen(
                 onClick = viewModel::finishOnboarding,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .height(60.dp)
+                    .shadow(10.dp, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 enabled = state !is OnboardingState.Loading
             ) {
                 if (state is OnboardingState.Loading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("GUARDAR Y EMPEZAR", fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                    Text("GUARDAR Y EMPEZAR", fontWeight = FontWeight.Black, letterSpacing = 1.sp)
                 }
             }
 

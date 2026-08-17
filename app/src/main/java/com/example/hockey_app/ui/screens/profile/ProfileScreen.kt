@@ -21,7 +21,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.border
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -55,25 +58,30 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("MI PERFIL", fontWeight = FontWeight.Black, fontSize = 16.sp) },
-                navigationIcon = {
-                    IconButton(onClick = onMenuClick) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.logout { onNavigateToLogin() } }) {
-                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White
+            Surface(
+                modifier = Modifier.shadow(8.dp),
+                color = MaterialTheme.colorScheme.primary
+            ) {
+                TopAppBar(
+                    title = { Text("MI PERFIL", fontWeight = FontWeight.Black, fontSize = 16.sp, letterSpacing = 1.sp) },
+                    navigationIcon = {
+                        IconButton(onClick = onMenuClick) {
+                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { viewModel.logout { onNavigateToLogin() } }) {
+                            Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White,
+                        actionIconContentColor = Color.White
+                    )
                 )
-            )
+            }
         },
         containerColor = Color(0xFFF5F5F5)
     ) { padding ->
@@ -82,6 +90,7 @@ fun ProfileScreen(
                 CircularProgressIndicator()
             }
         } else {
+            val accentColor = if (user!!.rama.contains("Fem", true) || user!!.rama.contains("Dama", true)) Color(0xFFFF4081) else Color(0xFF2979FF)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -89,7 +98,7 @@ fun ProfileScreen(
                     .verticalScroll(scrollState)
             ) {
                 // Header with Photos
-                ProfileHeader(user!!, onEditPhoto = {
+                ProfileHeader(user!!, accentColor = accentColor, onEditPhoto = {
                     photoPickerLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
@@ -105,7 +114,8 @@ fun ProfileScreen(
                             InfoItem("Comparar Clubes", "Cara a cara con otros equipos", Icons.Default.Compare, onNavigateToCompareClubs),
                             InfoItem("Mis Favoritos", "Clubes seguidos", Icons.Default.Star, onNavigateToFavoriteClubs),
                             InfoItem("Configuración", "Ajustes de la cuenta", Icons.Default.Settings, onNavigateToSettings)
-                        )
+                        ),
+                        accentColor = accentColor
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -116,7 +126,8 @@ fun ProfileScreen(
                         listOf(
                             InfoItem("Nombre Completo", user!!.nombre, Icons.Default.Person),
                             InfoItem("Email", user!!.email, Icons.Default.AlternateEmail)
-                        )
+                        ),
+                        accentColor = accentColor
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -130,7 +141,8 @@ fun ProfileScreen(
                             InfoItem("Categoría", user!!.categoria, Icons.Default.EmojiEvents),
                             InfoItem("División", user!!.division ?: "-", Icons.Default.MilitaryTech),
                             InfoItem("Número Camiseta", if (user!!.numero_camiseta != null) "#${user!!.numero_camiseta}" else "-", Icons.Default.Numbers)
-                        )
+                        ),
+                        accentColor = accentColor
                     )
                     
                     Spacer(modifier = Modifier.height(40.dp))
@@ -141,76 +153,94 @@ fun ProfileScreen(
 }
 
 @Composable
-fun ProfileHeader(user: UserModel, onEditPhoto: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+fun ProfileHeader(user: UserModel, accentColor: Color, onEditPhoto: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(MaterialTheme.colorScheme.primary, Color(0xFF0F2B48))
+                )
+            )
+            .padding(bottom = 30.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Photo / Placeholder
-            Box(
-                modifier = Modifier
-                    .size(90.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                    .border(3.dp, Color.White, CircleShape)
-                    .clickable { onEditPhoto() },
-                contentAlignment = Alignment.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                if (!user.foto_url.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = user.foto_url,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                // Profile Photo / Placeholder
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .shadow(12.dp, CircleShape)
+                        .background(Color.White, CircleShape)
+                        .border(3.dp, Color.White, CircleShape)
+                        .clickable { onEditPhoto() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (!user.foto_url.isNullOrEmpty()) {
+                        AsyncImage(
+                            model = user.foto_url,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize().clip(CircleShape)
+                        )
+                    } else {
+                        Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = accentColor, modifier = Modifier.size(30.dp))
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                // Club Badge
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .shadow(12.dp, CircleShape)
+                        .background(Color.White, CircleShape)
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (!user.club_escudo.isNullOrEmpty()) {
+                        AsyncImage(
+                            model = user.club_escudo,
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Text("🏑", fontSize = 44.sp)
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.width(20.dp))
-
-            // Club Badge
-            Box(
-                modifier = Modifier
-                    .size(90.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = user.nombre.uppercase(),
+                fontWeight = FontWeight.Black,
+                fontSize = 20.sp,
+                color = Color.White,
+                letterSpacing = 1.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Surface(
+                color = Color.White.copy(alpha = 0.15f),
+                shape = CircleShape
             ) {
-                if (!user.club_escudo.isNullOrEmpty()) {
-                    AsyncImage(
-                        model = user.club_escudo,
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Text("🏑", fontSize = 40.sp)
-                }
+                Text(
+                    text = (if (user.user_type == "jugador") "JUGADOR/A DE HOCKEY" else "CUERPO TÉCNICO"),
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    color = Color.White,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 1.5.sp
+                )
             }
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = user.nombre.uppercase(),
-            fontWeight = FontWeight.Black,
-            fontSize = 18.sp,
-            letterSpacing = 1.sp
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = if (user.user_type == "jugador") "JUGADOR/A DE HOCKEY" else "CUERPO TÉCNICO",
-            color = Color.Gray,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.ExtraBold,
-            letterSpacing = 1.5.sp
-        )
     }
 }
 
@@ -226,18 +256,22 @@ fun SectionHeader(title: String) {
 }
 
 @Composable
-fun InfoCard(items: List<InfoItem>) {
+fun InfoCard(items: List<InfoItem>, accentColor: Color) {
     Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(6.dp, RoundedCornerShape(24.dp), ambientColor = accentColor.copy(alpha = 0.1f)),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(0.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFEEEEEE))
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column {
-            items.forEachIndexed { index, item ->
-                InfoTile(item)
-                if (index < items.size - 1) {
-                    HorizontalDivider(modifier = Modifier.padding(start = 60.dp), thickness = 0.5.dp, color = Color(0xFFF5F5F5))
+        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+            Box(modifier = Modifier.fillMaxHeight().width(6.dp).background(accentColor))
+            Column {
+                items.forEachIndexed { index, item ->
+                    InfoTile(item, accentColor)
+                    if (index < items.size - 1) {
+                        HorizontalDivider(modifier = Modifier.padding(start = 60.dp), thickness = 0.5.dp, color = Color(0xFFF5F5F5))
+                    }
                 }
             }
         }
@@ -245,19 +279,19 @@ fun InfoCard(items: List<InfoItem>) {
 }
 
 @Composable
-fun InfoTile(item: InfoItem) {
+fun InfoTile(item: InfoItem, accentColor: Color) {
     ListItem(
         headlineContent = { Text(item.label, fontSize = 9.sp, color = Color.Gray, fontWeight = FontWeight.Black, letterSpacing = 0.5.sp) },
-        supportingContent = { Text(item.value, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Black) },
+        supportingContent = { Text(item.value.uppercase(), fontWeight = FontWeight.Black, fontSize = 14.sp, color = Color(0xFF1A1A1A)) },
         leadingContent = {
             Box(
                 modifier = Modifier
-                    .size(38.dp)
+                    .size(40.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)),
+                    .background(accentColor.copy(alpha = 0.08f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(item.icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                Icon(item.icon, contentDescription = null, tint = accentColor, modifier = Modifier.size(20.dp))
             }
         },
         trailingContent = if (item.onClick != null) {

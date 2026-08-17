@@ -7,6 +7,7 @@ import com.example.hockey_app.data.models.PartidoAHBA
 import com.example.hockey_app.data.models.PosicionAHBA
 import com.example.hockey_app.domain.auth.AuthRepository
 import com.example.hockey_app.domain.competition.CompetitionRepository
+import com.example.hockey_app.features.tournaments.domain.usecases.CalculatePerformanceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +34,8 @@ sealed class TorneoDetalleState {
 @HiltViewModel
 class TorneoDetalleViewModel @Inject constructor(
     private val supabaseService: CompetitionRepository,
-    private val authService: AuthRepository
+    private val authService: AuthRepository,
+    private val calculatePerformanceUseCase: CalculatePerformanceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<TorneoDetalleState>(TorneoDetalleState.Loading)
@@ -53,43 +55,19 @@ class TorneoDetalleViewModel @Inject constructor(
                     teamToAnalyze = posiciones.firstOrNull()?.clubNombre ?: ""
                 }
 
-                val performance = calculatePerformance(partidos, teamToAnalyze)
+                val (points, labels) = calculatePerformanceUseCase(teamToAnalyze, partidos)
                 
                 _state.value = TorneoDetalleState.Success(
                     posiciones.toImmutableList(), 
                     partidos.toImmutableList(), 
                     goleadores.toImmutableList(),
-                    performancePoints = performance.first.toImmutableList(),
-                    performanceLabels = performance.second.toImmutableList(),
+                    performancePoints = points.toImmutableList(),
+                    performanceLabels = labels.toImmutableList(),
                     targetTeam = teamToAnalyze
                 )
             } catch (e: Exception) {
                 _state.value = TorneoDetalleState.Error(e.message ?: "Error al cargar detalle del torneo")
             }
         }
-    }
-
-    private fun calculatePerformance(partidos: List<PartidoAHBA>, team: String): Pair<List<Float>, List<String>> {
-        if (team.isEmpty()) return emptyList<Float>() to emptyList()
-        
-        val playedGames = partidos.filter { 
-            it.jugado && (it.nombreLocal.contains(team, true) || it.nombreVisitante.contains(team, true))
-        }.sortedBy { it.numeroFecha.toIntOrNull() ?: 0 }
-        
-        val last5 = playedGames.takeLast(5)
-        val points = last5.map { 
-            val isLocal = it.nombreLocal.contains(team, true)
-            val myG = if(isLocal) it.golesLocal ?: 0 else it.golesVisitante ?: 0
-            val opG = if(isLocal) it.golesVisitante ?: 0 else it.golesLocal ?: 0
-            
-            when {
-                myG > opG -> 3f
-                myG == opG -> 1f
-                else -> 0f
-            }
-        }
-        val labels = last5.map { "F${it.numeroFecha}" }
-        
-        return points to labels
     }
 }

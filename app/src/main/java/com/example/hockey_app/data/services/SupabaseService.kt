@@ -83,12 +83,12 @@ class SupabaseService @Inject constructor(
                     escudoVisitante = row["escudo_visita"]?.jsonPrimitive?.contentOrNull,
                     golesLocal = row["goles_local"]?.jsonPrimitive?.contentOrNull?.toIntOrNull(),
                     golesVisitante = row["goles_visita"]?.jsonPrimitive?.contentOrNull?.toIntOrNull(),
-                    horario = row["fecha"]?.jsonPrimitive?.contentOrNull,
+                    fechaHora = row["fecha"]?.jsonPrimitive?.contentOrNull,
                     numeroFecha = row["numero_fecha"]?.jsonPrimitive?.contentOrNull ?: "",
                     jugado = row["jugado"]?.jsonPrimitive?.booleanOrNull ?: false
                 )
             }.sortedWith(
-                compareBy<PartidoAHBA> { chronologicalKey(it.horario) }
+                compareBy<PartidoAHBA> { chronologicalKey(it.fechaHora) }
                     .thenBy { it.numeroFecha.toIntOrNull() ?: Int.MAX_VALUE }
             )
         } catch (e: Exception) {

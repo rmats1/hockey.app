@@ -27,7 +27,7 @@ data class PartidoAHBA(
     @SerialName("escudo_visita") val escudoVisitante: String? = null,
     @SerialName("goles_local") val golesLocal: Int? = null,
     @SerialName("goles_visita") val golesVisitante: Int? = null,
-    @SerialName("fecha") val horario: String? = null, // Renamed back to match UI
+    @SerialName("fecha") val fechaHora: String? = null, 
     @SerialName("numero_fecha") val numeroFecha: String,
     val jugado: Boolean
 )

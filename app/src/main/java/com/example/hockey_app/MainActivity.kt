@@ -31,22 +31,32 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         // Only process the exact callback shape registered in the manifest.
         handleSupabaseDeepLink(intent)
-        
+
         // Seguridad: Prevenir capturas de pantalla
         SecurityUtils.setSecureWindow(this)
-        
+
         val isRooted = SecurityUtils.isDeviceRooted()
-        
+
         enableEdgeToEdge()
         setContent {
             HockeyPlusTheme {
                 if (isRooted) {
                     CompromisedDeviceScreen()
                 } else {
-                    AppNavigation()
+                    // Check if user has an active session
+                    val session = supabaseClient.currentSession()
+                    if (session == null) {
+                        // Show login screen if no active session
+                        // Replace "LoginScreen()" with your actual login screen composable
+                        LoginScreen()
+                    } else {
+                        // Show main app navigation if logged in
+                        AppNavigation()
+                    }
+                }
                 }
             }
         }
