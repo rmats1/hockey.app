@@ -140,12 +140,33 @@ def sync_data():
                                 detail = json.loads(raw_detail)
 
                                 # Sync Partidos
-                                for p in detail.get("todosLosPartidos", []):
+                                all_matches = []
+                                # Intentar recolectar partidos de todos los campos posibles que usa la API de AHBA
+                                all_matches.extend(detail.get("todosLosPartidos", []))
+                                all_matches.extend(detail.get("proximosPartidos", []))
+                                all_matches.extend(detail.get("partidosAnteriores", []))
+
+                                # Si hay una lista de "fechas", iterar por cada una
+                                if "fechas" in detail:
+                                    for fecha_obj in detail["fechas"]:
+                                        all_matches.extend(fecha_obj.get("partidos", []))
+
+                                # Eliminar duplicados por ID para no saturar Supabase
+                                seen_match_ids = set()
+                                unique_matches = []
+                                for m in all_matches:
+                                    if m["id"] not in seen_match_ids:
+                                        unique_matches.append(m)
+                                        seen_match_ids.add(m["id"])
+
+                                print(f"    [*] Encontrados {len(unique_matches)} partidos únicos.")
+
+                                for p in unique_matches:
                                     p_data = {
                                         "id": p["id"],
                                         "torneo_id": t_id,
                                         "fecha": p.get("fecha") or p.get("horario"),
-                                        "numero_fecha": p.get("numeroFecha", p.get("numero_fecha", "")),
+                                        "numero_fecha": str(p.get("numeroFecha", p.get("numero_fecha", ""))),
                                         "equipo_local": p.get("nombreLocal", p.get("equipo_local", "")),
                                         "equipo_visita": p.get("nombreVisitante", p.get("equipo_visita", "")),
                                         "escudo_local": p.get("escudoLocal", p.get("escudo_local")),
