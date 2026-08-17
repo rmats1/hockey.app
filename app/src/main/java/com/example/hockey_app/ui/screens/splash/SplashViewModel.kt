@@ -28,23 +28,15 @@ class SplashViewModel @Inject constructor(
 
     private fun checkAuth() {
         viewModelScope.launch {
-            try {
-                // Wait for session status to be determined (Authenticated or NotAuthenticated)
-                // We add a timeout just in case restoration hangs
-                withTimeout(3000) {
-                    authService.sessionStatus
-                        .filter { it !is SessionStatus.Initializing }
-                        .take(1)
-                        .collect { status ->
-                            Timber.d("Splash check status: ${status::class.simpleName}")
-                            _isLoggedIn.value = status is SessionStatus.Authenticated
-                            _isReady.value = true
-                        }
+            // Monitorizamos el estado hasta que deje de ser Initializing
+            authService.sessionStatus.collect { status ->
+                Timber.d("Splash check current status: ${status::class.simpleName}")
+                if (status !is SessionStatus.Initializing) {
+                    _isLoggedIn.value = status is SessionStatus.Authenticated
+                    _isReady.value = true
+                    // Una vez determinado el estado, dejamos de observar
+                    return@collect 
                 }
-            } catch (e: Exception) {
-                Timber.w("Splash check timed out or failed. Defaulting to Login.")
-                _isLoggedIn.value = false
-                _isReady.value = true
             }
         }
     }
