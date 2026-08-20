@@ -43,7 +43,7 @@ def decrypt(encrypted_text, passphrase):
 def fetch_api(endpoint):
     url = f"{API_BASE_URL}{endpoint}"
     try:
-        response = requests.get(url, headers=HEADERS, timeout=20)
+        response = requests.get(url, headers=HEADERS, timeout=30)
         if response.status_code == 200:
             return decrypt(response.text, PASSPHRASE)
     except Exception as e:
@@ -51,7 +51,7 @@ def fetch_api(endpoint):
     return None
 
 def sync_data():
-    print("[*] Iniciando sincronización global AHBA -> Supabase...")
+    print("[*] Iniciando sincronización DEEP AHBA -> Supabase...")
 
     # 1. Sincronizar Clubes
     raw_clubes = fetch_api("/clubes")
@@ -105,37 +105,43 @@ def sync_data():
                                 if not raw_detail: continue
                                 detail = json.loads(raw_detail)
 
-                                # --- FUSIÓN INTELIGENTE DE PARTIDOS ---
+                                # --- EXTRACCIÓN DEEP DE PARTIDOS Y POSICIONES ---
                                 all_matches = []
-                                all_matches.extend(detail.get("todosLosPartidos") or [])
-                                all_matches.extend(detail.get("proximosPartidos") or [])
-                                all_matches.extend(detail.get("partidosAnteriores") or [])
-                                if "fechas" in detail and detail["fechas"]:
-                                    for f in detail["fechas"]:
-                                        all_matches.extend(f.get("partidos") or [])
+                                unique_positions = []
 
-                                seen_ids = set()
+                                for fase in detail.get("fases", []):
+                                    for zona in fase.get("zonas", []):
+                                        # Partidos
+                                        all_matches.extend(zona.get("partidos") or [])
+                                        # Posiciones
+                                        unique_positions.extend(zona.get("tablaGeneral") or [])
+
+                                # Upsert Partidos
+                                seen_match_ids = set()
                                 for p in all_matches:
-                                    if not p or p["id"] in seen_ids: continue
-                                    seen_ids.add(p["id"])
+                                    if not p or p.get("id") in seen_match_ids: continue
+                                    seen_match_ids.add(p["id"])
                                     p_data = {
-                                        "id": p["id"], "torneo_id": t_id, "fecha": p.get("fecha") or p.get("horario"),
-                                        "numero_fecha": str(p.get("numeroFecha", p.get("numero_fecha", ""))),
-                                        "equipo_local": p.get("nombreLocal", p.get("equipo_local", "")),
-                                        "equipo_visita": p.get("nombreVisitante", p.get("equipo_visita", "")),
-                                        "escudo_local": p.get("escudoLocal", p.get("escudo_local")),
-                                        "escudo_visita": p.get("escudoVisitante", p.get("escudo_visita")),
-                                        "goles_local": p.get("golesLocal", p.get("goles_local")),
-                                        "goles_visita": p.get("golesVisitante", p.get("goles_visita")),
-                                        "jugado": p.get("jugado", False), "torneo_nombre": t_ref["nombre"]
+                                        "id": p["id"], "torneo_id": t_id,
+                                        "fecha": p.get("horario") or p.get("fecha"),
+                                        "numero_fecha": str(p.get("numeroFecha", "")),
+                                        "equipo_local": p.get("nombreLocal", ""),
+                                        "equipo_visita": p.get("nombreVisitante", ""),
+                                        "escudo_local": p.get("escudoImagePathLocal"),
+                                        "escudo_visita": p.get("escudoImagePathVisitante"),
+                                        "goles_local": p.get("golesLocal"),
+                                        "goles_visita": p.get("golesVisitante"),
+                                        "jugado": p.get("played", False),
+                                        "torneo_nombre": t_ref["nombre"]
                                     }
                                     supabase.table("partidos").upsert(p_data).execute()
 
-                                # Sync Posiciones
-                                for pos in detail.get("tablaGeneral", []):
+                                # Upsert Posiciones
+                                for pos in unique_positions:
+                                    if not pos.get("clubNombre"): continue
                                     pos_data = {
-                                        "id": f"{t_id}_{pos.get('clubNombre', '')}", "torneo_id": t_id,
-                                        "posicion": pos.get("puesto", 0), "equipo": pos.get("clubNombre", ""),
+                                        "id": f"{t_id}_{pos.get('clubNombre')}", "torneo_id": t_id,
+                                        "posicion": pos.get("puesto", 0), "equipo": pos.get("clubNombre"),
                                         "escudo": pos.get("escudoUrl"), "pj": pos.get("partidosJugados", 0),
                                         "pg": pos.get("partidosGanados", 0), "pe": pos.get("partidosEmpatados", 0),
                                         "pp": pos.get("partidosPerdidos", 0), "gf": pos.get("golesAFavor", 0),
@@ -144,16 +150,17 @@ def sync_data():
                                     supabase.table("posiciones").upsert(pos_data).execute()
 
                                 # Sync Goleadores
-                                supabase.table("goleadores").delete().eq("torneo_id", t_id).execute()
-                                for g in detail.get("goleadores", []):
-                                    nom = " ".join(filter(None, [g.get("jug_nombre"), g.get("jug_apellido"), g.get("nombreCompleto")])).strip()
-                                    if not nom: continue
-                                    g_data = {
-                                        "torneo_id": t_id, "jugador_nombre": nom, "club_nombre": g.get("clubNombre", ""),
-                                        "foto_url": g.get("jug_foto", g.get("fotoUrl")), "goles": g.get("goles", 0)
-                                    }
-                                    try: supabase.table("goleadores").insert(g_data).execute()
-                                    except: pass
+                                if detail.get("goleadores"):
+                                    supabase.table("goleadores").delete().eq("torneo_id", t_id).execute()
+                                    for g in detail.get("goleadores", []):
+                                        nom = " ".join(filter(None, [g.get("jug_nombre"), g.get("jug_apellido"), g.get("nombreCompleto")])).strip()
+                                        if not nom: continue
+                                        g_data = {
+                                            "torneo_id": t_id, "jugador_nombre": nom, "club_nombre": g.get("clubNombre", ""),
+                                            "foto_url": g.get("jug_foto", g.get("fotoUrl")), "goles": g.get("goles", 0)
+                                        }
+                                        try: supabase.table("goleadores").insert(g_data).execute()
+                                        except: pass
 
 if __name__ == "__main__":
     try: sync_data(); print("[+] Sincronización finalizada exitosamente.")
